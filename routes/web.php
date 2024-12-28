@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/users',[UserController::class,'index'])->name('users');
 Route::get('/users/create',[UserController::class,'create'])->name('users.create');
 Route::post('/users',[UserController::class,'store'])->name('users.store');
+Route::get('/users/{user}/edit',[UserController::class,'edit'])->name('users.edit');
+Route::put('/users/{user}',[UserController::class,'update'])->name('users.update');
+
 Route::get('/users/show/{id}',[UserController::class,'show'])->name('users/show');
-Route::get('/users/edit/{id}',[UserController::class,'edit'])->name('users/edit');
 Route::delete('/users/destroy/{id}',[UserController::class,'destroy'])->name('users/destroy');
 
 Route::get('/', function () {

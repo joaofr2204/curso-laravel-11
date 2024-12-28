@@ -6,6 +6,19 @@
     </x-slot>
 
     <div class="container mx-auto px-4 py-6">
+
+        @if (session()->has('success'))
+            <div class="bg-green-100 text-green-700 px-4 py-3 rounded mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+        
+        @if (session()->has('warning'))
+            <div class="bg-yellow-100 text-yellow-700 px-4 py-3 rounded mb-4">
+                {{ session('warning') }}
+            </div>
+        @endif
+
         <div class="mb-4">
             <a href="{{ route('users.create') }}"
                 class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
@@ -41,9 +54,13 @@
                                 {{ $user->email }}
                             </td>
                             <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
-                                {{--
-                                Ações podem ser descomentadas aqui
-                                --}}
+                            
+                            <a href="{{ route('users.edit', $user->id) }}"
+                                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-500">
+                                Editar
+                            </a>
+                            
+                                
                             </td>
                         </tr>
                     @empty

@@ -24,9 +24,10 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-        User::create(Request::all());
-    
-        return redirect()->route('users')->with('success', 'Usuário criado com sucesso!');
+        User::create($request->all());
+
+        return redirect()->route('users')
+            ->with('success', 'Usuário criado com sucesso!');
     }
 
     public function show($id)
@@ -35,22 +36,22 @@ class UserController extends Controller
         return view('core.users.show', compact('user'));
     }
 
-    public function edit($id)
+    public function edit(string $id)
     {
-        $user = User::find($id);
+        if(!$user = User::find($id)){
+            return redirect()->route('users')->with('warning','Usuário não encontrado');
+        };
         return view('core.users.edit', compact('user'));
     }
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-        ]);
-        $user = User::find($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->save();
-        return redirect()->route('users');
+
+        if(!$user = User::find($id)){
+            return redirect()->route('users')->with('warning','Usuário não encontrado');
+        };
+
+        $user->update($request->only('name','email'));
+        return redirect()->route('users')->with('success','Usuário atualizado com sucesso');
     }
 
     public function destroy($id)
