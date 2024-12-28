@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\Core\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -21,20 +22,9 @@ class UserController extends Controller
         return view('core.users.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email', // Validação para evitar duplicados
-            'password' => 'required|string|min:8',
-        ]);
-    
-        // Caso a validação passe, você pode criar o usuário
-        User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-        ]);
+        User::create(Request::all());
     
         return redirect()->route('users')->with('success', 'Usuário criado com sucesso!');
     }

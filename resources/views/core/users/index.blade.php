@@ -34,13 +34,13 @@
                 <tbody>
                     @forelse($users as $user)
                         <tr class="{{ $loop->odd ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
+                            <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
                                 {{ $user->name }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 {{ $user->email }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                            <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
                                 {{--
                                 Ações podem ser descomentadas aqui
                                 --}}
