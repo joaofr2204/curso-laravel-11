@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Core;
 use App\Http\Controllers\Controller;
 use App\Models\Core\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -25,7 +26,7 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email', // Validação para evitar duplicados
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
         ]);
     
         // Caso a validação passe, você pode criar o usuário
@@ -35,7 +36,7 @@ class UserController extends Controller
             'password' => Hash::make($validatedData['password']),
         ]);
     
-        return redirect()->route('users.index')->with('success', 'Usuário criado com sucesso!');
+        return redirect()->route('users')->with('success', 'Usuário criado com sucesso!');
     }
 
     public function show($id)
@@ -59,13 +60,13 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->save();
-        return redirect()->route('core.users.index');
+        return redirect()->route('users');
     }
 
     public function destroy($id)
     {
         $user = User::find($id);
         $user->delete();
-        return redirect()->route('core.users.index');
+        return redirect()->route('users');
     }
 }
