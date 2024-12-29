@@ -1,5 +1,5 @@
 <x-app-layout>
-    
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Usuários') }}
@@ -51,7 +51,13 @@
                                 Editar
                             </a>
                             
-                                
+                            <span class="text-gray-300 dark:text-gray-700">|</span>
+
+                            <a href="{{ route('users.show', $user->id) }}"
+                                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-500">
+                                Detalhes
+                            </a>
+
                             </td>
                         </tr>
                     @empty

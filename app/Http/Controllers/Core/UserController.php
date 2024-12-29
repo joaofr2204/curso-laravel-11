@@ -31,7 +31,9 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id);
+        if(!$user = User::find($id)){
+            return redirect()->route('users')->with('warning','Usuário não encontrado');
+        };
         return view('core.users.show', compact('user'));
     }
 
@@ -54,15 +56,17 @@ class UserController extends Controller
         if($request->password){
             $data['password'] = bcrypt($request->password);
         }
-        $user->update($data);
 
+        $user->update($data);
         return redirect()->route('users')->with('success','Usuário atualizado com sucesso');
     }
 
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $user = User::find($id);
+        if(!$user = User::find($id)){
+            return redirect()->route('users')->with('warning','Usuário não encontrado');
+        };
         $user->delete();
-        return redirect()->route('users');
+        return redirect()->route('users')->with('success','Usuário deletado com sucesso');
     }
 }
