@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\StoreUserRequest;
 use App\Http\Requests\Core\UpdateUserRequest;
 use App\Models\Core\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     //
     public function index()
     {
-        $users = User::paginate(15);
+        $users = User::paginate(50);
         return view('core.users.index', compact('users'));
     }
 
@@ -63,9 +64,14 @@ class UserController extends Controller
 
     public function destroy(string $id)
     {
+        if(Auth::user()->id == $id){
+            return redirect()->route('users')->with('warning','Você não pode deletar seu próprio usuário');
+        }
+
         if(!$user = User::find($id)){
             return redirect()->route('users')->with('warning','Usuário não encontrado');
-        };
+        }
+        
         $user->delete();
         return redirect()->route('users')->with('success','Usuário deletado com sucesso');
     }

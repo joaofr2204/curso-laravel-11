@@ -17,7 +17,8 @@
             </a>
         </div>
 
-        <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow-md rounded-lg">
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg">
+            <!-- Cabeçalho fixo -->
             <table class="min-w-full table-auto border-collapse">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
@@ -35,45 +36,49 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($users as $user)
-                        <tr class="{{ $loop->odd ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }}">
-                            <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
-                                {{ $user->name }}
-                            </td>
-                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                {{ $user->email }}
-                            </td>
-                            <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
-                            
-                            <a href="{{ route('users.edit', $user->id) }}"
-                                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-500">
-                                Editar
-                            </a>
-                            
-                            <span class="text-gray-300 dark:text-gray-700">|</span>
-
-                            <a href="{{ route('users.show', $user->id) }}"
-                                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-500">
-                                Detalhes
-                            </a>
-
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-300">
-                                Nenhum usuário cadastrado
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
             </table>
+
+            <!-- Corpo com rolagem -->
+            <div class="h-[65vh] overflow-y-auto">
+                <table class="min-w-full table-auto border-collapse">
+                    <tbody>
+                        @forelse($users as $user)
+                            <tr class="{{ $loop->odd ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }}">
+                                <td
+                                    class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
+                                    {{ $user->name }}
+                                </td>
+                                <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    {{ $user->email }}
+                                </td>
+                                <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
+                                    <a href="{{ route('users.edit', $user->id) }}"
+                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-500">
+                                        Editar
+                                    </a>
+                                    <span class="text-gray-300 dark:text-gray-700">|</span>
+                                    <a href="{{ route('users.show', $user->id) }}"
+                                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-500">
+                                        Detalhes
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-300">
+                                    Nenhum usuário cadastrado
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="mt-4 flex flex-col sm:flex-row items-center justify-between">
-            <div class="mt-2 sm:mt-0">
-                {{ $users->links() }}
+
+        <div class="mt-4 flex flex-col sm:flex-row">
+            <div class="mt-2 sm:mt-0 w-full">
+                {{ $users->onEachSide(2)->links() }}
             </div>
         </div>
     </div>
