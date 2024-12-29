@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Core;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\Core\StoreUserRequest;
+use App\Http\Requests\Core\UpdateUserRequest;
 use App\Models\Core\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -24,7 +23,7 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-        User::create($request->all());
+        User::create($request->validated());
 
         return redirect()->route('users')
             ->with('success', 'Usuário criado com sucesso!');
@@ -43,14 +42,19 @@ class UserController extends Controller
         };
         return view('core.users.edit', compact('user'));
     }
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, string $id)
     {
 
         if(!$user = User::find($id)){
             return redirect()->route('users')->with('warning','Usuário não encontrado');
         };
 
-        $user->update($request->only('name','email'));
+        $data = $request->only('name','email');
+        if($request->password){
+            $data['password'] = bcrypt($request->password);
+        }
+        $user->update($data);
+
         return redirect()->route('users')->with('success','Usuário atualizado com sucesso');
     }
 

@@ -1,4 +1,5 @@
 <x-app-layout>
+    
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Usuários') }}
@@ -7,17 +8,7 @@
 
     <div class="container mx-auto px-4 py-6">
 
-        @if (session()->has('success'))
-            <div class="bg-green-100 text-green-700 px-4 py-3 rounded mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
-        
-        @if (session()->has('warning'))
-            <div class="bg-yellow-100 text-yellow-700 px-4 py-3 rounded mb-4">
-                {{ session('warning') }}
-            </div>
-        @endif
+        <x-alert />
 
         <div class="mb-4">
             <a href="{{ route('users.create') }}"
