@@ -6,9 +6,6 @@
         </h2>
     </x-slot>
 
-    <x-form action="{{ route('users.update' , $user->id ) }}">
-        @method('PUT')
-        @include('core.users.partials.form',['action' => 'update'])
-    </x-form>    
+    <x-crud-form model="users" action="update" :data="$user->toArray()"/>
 
 </x-app-layout>

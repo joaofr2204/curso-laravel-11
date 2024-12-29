@@ -6,8 +6,6 @@
         </h2>
     </x-slot>
 
-    <x-form action="{{ route('users.store') }}">
-        @include('core.users.partials.form',['action' => 'store'])
-    </x-form>    
+    <x-crud-form model="users" action="store"/>
 
 </x-app-layout>

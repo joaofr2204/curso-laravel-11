@@ -18,7 +18,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('core.users.create');
+        return view('core.users.create' );
     }
 
     public function store(StoreUserRequest $request)
@@ -40,6 +40,7 @@ class UserController extends Controller
         if(!$user = User::find($id)){
             return redirect()->route('users')->with('warning','Usuário não encontrado');
         };
+
         return view('core.users.edit', compact('user'));
     }
     public function update(UpdateUserRequest $request, string $id)
