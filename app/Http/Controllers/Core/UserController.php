@@ -21,9 +21,8 @@ class UserController extends Controller
 
             return DataTables::of($users)
                 ->addColumn('action', function ($user) {
-                    return '<a href="' . route('users.show', [$user->id,'abobrinha']) . '" class="btn btn-info btn-sm">Mostrar</a>
-                            <a href="' . route('users.edit', $user->id) . '" class="btn btn-primary btn-sm">Editar</a>';
-                })
+                    return view('core.crud-actions', compact('user'))->render();
+                },false)
                 ->rawColumns(['action']) // Tornar a coluna 'action' como HTML
                 ->make(true);
         }
@@ -56,7 +55,7 @@ class UserController extends Controller
     {
         if (!$user = User::find($id)) {
             return redirect()->route('users.index')->with('warning', 'Usuário não encontrado');
-        }        
+        }
 
         return view('core.users.edit', compact('user'));
     }
@@ -90,13 +89,14 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Usuário deletado com sucesso');
     }
 
-    public static function routes(){
-        Route::get('/users',[UserController::class,'index'])->name('users.index');
-        Route::get('/users/create',[UserController::class,'create'])->name('users.create');
-        Route::get('/users/{id}/{outro}',[UserController::class,'show'])->name('users.show');
-        Route::post('/users',[UserController::class,'store'])->name('users.store');
-        Route::get('/users/{user}/edit',[UserController::class,'edit'])->name('users.edit');
-        Route::put('/users/{user}',[UserController::class,'update'])->name('users.update');
-        Route::delete('/users/{user}/destroy',[UserController::class,'destroy'])->name('users.destroy');
+    public static function routes()
+    {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}/destroy', [UserController::class, 'destroy'])->name('users.destroy');
     }
 }
