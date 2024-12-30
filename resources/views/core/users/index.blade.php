@@ -36,7 +36,7 @@
         </div>
 
         <div class="overflow-hidden rounded-lg shadow-lg border border-gray-200 bg-white w-full px-4 py-4">
-            <table id="crud-table" class="display cell-border border" style="width:100%">
+            <table id="crud-table" class="display cell-border border compact" style="width:100%">
                 <thead class="bg-gray-100 text-xs uppercase text-gray-700">
                     <tr>
                         <th class="border px-6 py-3">Nome</th>
