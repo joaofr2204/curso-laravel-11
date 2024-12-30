@@ -117,9 +117,7 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#crud-table').DataTable({
-
-
+            var table = $('#crud-table').DataTable({
 
                 pageLength: 100, // Define a quantidade de registros por página
                 lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
@@ -161,6 +159,12 @@
                 }
 
             });
+
+            // Após atualizar a tabela via AJAX, ajusta as colunas
+            $('#crud-table').on('init.dt', function () {
+                table.columns.adjust().draw();
+            });
+
         });
     </script>
 
