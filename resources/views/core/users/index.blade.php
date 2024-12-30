@@ -10,6 +10,21 @@
             crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <style>
+            .dataTables_wrapper,
+            .dataTables_wrapper input,
+            .dataTables_wrapper select {
+                font-size: .875rem;
+                line-height: 1.25rem;
+            }
+
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {
+                margin: 0;
+                /* Remove margens extras */
+                display: inline-block;
+                /* Mantém os elementos inline */
+            }
+
             .dataTables_wrapper .dataTables_length select {
                 padding: 4px 20px 4px 4px;
                 background-position: right 0px center;
@@ -35,6 +50,32 @@
             .dataTables_wrapper .dataTables_length select {
                 margin-left: 10px;
             }
+
+            /* Paginate - xs */
+            .dataTables_wrapper .dataTables_paginate {
+                padding-top: .755em;
+                margin-top: 0px;
+            }
+
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {}
+
+            @media screen and (max-width: 767px) {
+                .dataTables_wrapper .dataTables_paginate {}
+            }
+
+            @media screen and (max-width: 640px) {
+
+                .dataTables_wrapper .dataTables_length {
+                    margin-top: 0px;
+                    float: left
+                }
+
+                .dataTables_wrapper .dataTables_filter {
+                    margin-top: 0px;
+                    float: right
+                }
+            }
         </style>
     </x-slot>
 
@@ -55,8 +96,9 @@
             </a>
         </div>
 
-        <div class="rounded-lg shadow-lg border border-gray-200 bg-white dark:bg-gray-600 w-full px-4 py-4">
-            <table id="crud-table" class="display cell-border border compact" style="width:100%">
+        <div
+            class="rounded-lg shadow-lg border border-gray-200 bg-white dark:bg-gray-600 w-full px-4 py-4 min-w-[400px]">
+            <table id="crud-table" class="display cell-border border compact text-sm" style="width:100%">
                 <thead class="bg-gray-100 text-xs uppercase text-gray-700">
                     <tr>
                         <th class="border px-6 py-3">Nome</th>
@@ -76,9 +118,12 @@
 
         $(document).ready(function () {
             $('#crud-table').DataTable({
+
+
+
                 pageLength: 100, // Define a quantidade de registros por página
                 lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
-                scrollY: 'calc(100vh - 370px)', // Define a altura para 65% da altura da tela
+                scrollY: 'calc(100vh - 360px)', // Define a altura para 65% da altura da tela
                 scrollCollapse: true, // Permite que a tabela encolha quando houver menos dados
 
                 processing: true,
@@ -94,18 +139,24 @@
                 pagingType: "simple_numbers",  // Use "simple" para uma paginação mais compacta
                 language: {
                     "paginate": {
-                        "previous": "Anterior",
-                        "next": "Próximo"
-                    }
+                        "previous": "<<",
+                        "next": ">>"
+                    },
+                    lengthMenu: "Exibir_MENU_ <span class=\"hidden sm:inline-block\">registros por página</span>", // Traduz o texto "Show _MENU_ entries"
+                    search: "Buscar:", // Traduz o campo Search
+                    info: "Mostrando _START_ até _END_ de _TOTAL_ registros", // Traduz o texto "Showing ... to ... of ..."
+                    infoEmpty: "Nenhum registro", // Quando não há registros
+                    infoFiltered: "(filtrado de _MAX_ registros no total)" // Mensagem de filtro
+
                 },
                 initComplete: function (settings, json) {
                     // Ajustar a aparência da paginação
-                    $(this).closest('.dataTables_wrapper').find('.dataTables_paginate').addClass('flex justify-between items-center space-x-2 text-xs mt-4');
+                    $(this).closest('.dataTables_wrapper').find('.dataTables_paginate').addClass('flex justify-between items-center space-x-2 text-xs');
                     $(this).closest('.dataTables_wrapper').find('.paginate_button').addClass('bg-gray-300 text-gray-800 hover:bg-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none px-3 py-1 rounded');
-                    $(this).closest('.dataTables_wrapper').find('.dataTables_info').addClass('hidden md:flex');
+                    $(this).closest('.dataTables_wrapper').find('.dataTables_info').addClass('hidden md:block text-sm');
 
-    // Caso queira evitar que quebre linha, forçando o layout em uma linha
-    // $('.dataTables_wrapper').addClass('flex flex-nowrap items-center justify-between');
+                    // Caso queira evitar que quebre linha, forçando o layout em uma linha
+                    // $('.dataTables_wrapper').addClass('flex flex-nowrap items-center justify-between');
 
                 }
 

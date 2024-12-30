@@ -9,6 +9,10 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    safelist: [
+        'sm:inline-block',
+    ],
+
     theme: {
         extend: {
             fontFamily: {
