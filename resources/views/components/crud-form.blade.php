@@ -3,7 +3,7 @@
     <x-alert />
 
     <!-- Botão de Voltar -->
-    <button type="button" onclick="window.location = '{{ route($model) }}'"
+    <button type="button" onclick="window.location = '{{ route($model) }}.index'"
         class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
         Voltar
     </button>
