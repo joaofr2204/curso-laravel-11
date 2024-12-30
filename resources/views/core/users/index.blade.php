@@ -37,6 +37,12 @@
 
             }
 
+            /* Remove a borda inferior das células da tabela */
+            .dataTable tbody tr td{
+                border-top: 0px !important;
+                white-space: nowrap;
+            }
+
             /* CSS para garantir que os itens de pesquisa e paginação não quebrem linha */
             .dataTables_wrapper .dataTables_filter,
             .dataTables_wrapper .dataTables_length {
@@ -98,12 +104,12 @@
 
         <div
             class="rounded-lg shadow-lg border border-gray-200 bg-white dark:bg-gray-600 w-full px-4 py-4 min-w-[400px]">
-            <table id="crud-table" class="display cell-border border compact text-sm" style="width:100%">
-                <thead class="bg-gray-100 text-xs uppercase text-gray-700">
+            <table id="crud-table" class="display cell-border compact text-sm" style="width:100%">
+                <thead class="bg-gray-100 uppercase text-gray-700">
                     <tr>
-                        <th class="border px-6 py-3">Nome</th>
-                        <th class="border px-6 py-3">E-mail</th>
-                        <th class="border px-6 py-3 text-center">Ações</th>
+                        <th class="border">Nome</th>
+                        <th class="border">E-mail</th>
+                        <th class="border">Ações</th>
                     </tr>
                 </thead>
 
