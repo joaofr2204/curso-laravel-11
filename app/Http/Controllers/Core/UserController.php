@@ -8,6 +8,7 @@ use App\Http\Requests\Core\UpdateUserRequest;
 use App\Models\Core\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
@@ -15,12 +16,15 @@ class UserController extends Controller
     //
     public function index(Request $request)
     {
-        //$users = User::paginate(50);
-
         if ($request->ajax()) {
             $users = User::query();
 
             return DataTables::of($users)
+                ->addColumn('action', function ($user) {
+                    return '<a href="' . route('users.show', [$user->id,'abobrinha']) . '" class="btn btn-info btn-sm">Mostrar</a>
+                            <a href="' . route('users.edit', $user->id) . '" class="btn btn-primary btn-sm">Editar</a>';
+                })
+                ->rawColumns(['action']) // Tornar a coluna 'action' como HTML
                 ->make(true);
         }
         return view('core.users.index');
@@ -35,14 +39,14 @@ class UserController extends Controller
     {
         User::create($request->validated());
 
-        return redirect()->route('users')
+        return redirect()->route('users.index')
             ->with('success', 'Usuário criado com sucesso!');
     }
 
     public function show($id)
     {
         if (!$user = User::find($id)) {
-            return redirect()->route('users')->with('warning', 'Usuário não encontrado1');
+            return redirect()->route('users.index')->with('warning', 'Usuário não encontrado');
         }
         ;
         return view('core.users.show', compact('user'));
@@ -51,9 +55,8 @@ class UserController extends Controller
     public function edit(string $id)
     {
         if (!$user = User::find($id)) {
-            return redirect()->route('users')->with('warning', 'Usuário não encontrado2');
-        }
-        ;
+            return redirect()->route('users.index')->with('warning', 'Usuário não encontrado');
+        }        
 
         return view('core.users.edit', compact('user'));
     }
@@ -61,9 +64,8 @@ class UserController extends Controller
     {
 
         if (!$user = User::find($id)) {
-            return redirect()->route('users')->with('warning', 'Usuário não encontrado3');
+            return redirect()->route('users')->with('warning', 'Usuário não encontrado');
         }
-        ;
 
         $data = $request->only('name', 'email');
         if ($request->password) {
@@ -71,20 +73,30 @@ class UserController extends Controller
         }
 
         $user->update($data);
-        return redirect()->route('users')->with('success', 'Usuário atualizado com sucesso');
+        return redirect()->route('users.index')->with('success', 'Usuário atualizado com sucesso');
     }
 
     public function destroy(string $id)
     {
         if (Auth::user()->id == $id) {
-            return redirect()->route('users')->with('warning', 'Você não pode deletar seu próprio usuário');
+            return redirect()->route('users.index')->with('warning', 'Você não pode deletar seu próprio usuário');
         }
 
         if (!$user = User::find($id)) {
-            return redirect()->route('users')->with('warning', 'Usuário não encontrado4');
+            return redirect()->route('users.index')->with('warning', 'Usuário não encontrado4');
         }
 
         $user->delete();
-        return redirect()->route('users')->with('success', 'Usuário deletado com sucesso');
+        return redirect()->route('users.index')->with('success', 'Usuário deletado com sucesso');
+    }
+
+    public static function routes(){
+        Route::get('/users',[UserController::class,'index'])->name('users.index');
+        Route::get('/users/create',[UserController::class,'create'])->name('users.create');
+        Route::get('/users/{id}/{outro}',[UserController::class,'show'])->name('users.show');
+        Route::post('/users',[UserController::class,'store'])->name('users.store');
+        Route::get('/users/{user}/edit',[UserController::class,'edit'])->name('users.edit');
+        Route::put('/users/{user}',[UserController::class,'update'])->name('users.update');
+        Route::delete('/users/{user}/destroy',[UserController::class,'destroy'])->name('users.destroy');
     }
 }
