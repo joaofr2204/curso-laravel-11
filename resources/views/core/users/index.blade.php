@@ -1,95 +1,27 @@
 <x-app-layout>
 
     <x-slot name="head">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-            integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        @vite('resources/js/core/crud-index.js')
 
         <style>
-            .dataTables_wrapper,
-            .dataTables_wrapper input,
-            .dataTables_wrapper select {
-                font-size: .875rem;
-                line-height: 1.25rem;
-            }
-
-            .dataTables_wrapper .dataTables_length,
-            .dataTables_wrapper .dataTables_filter {
-                margin: 0;
-                /* Remove margens extras */
-                display: inline-block;
-                /* Mantém os elementos inline */
-            }
-
-            .dataTables_wrapper .dataTables_length select {
-                padding: 4px 20px 4px 4px;
+            .dt-container select.dt-input {
+                padding: 4px 20px 4px 4px !important;
                 background-position: right 0px center;
-                margin-bottom: 1rem;
+                margin-bottom: 0.7rem;
             }
-
-            .dataTables_wrapper .dataTables_filter input {
-                padding: 4px;
-                margin-bottom: 1rem;
-
+            .dt-container .dt-search .dt-input {
+                line-height: 1.22em !important;
             }
-
-            /* Remove a borda inferior das células da tabela */
-            .dataTable tbody tr td{
-                border-top: 0px !important;
-                white-space: nowrap;
+            .dt-container .dt-length .dt-input {
+                line-height: 1.36em !important;
             }
-
-            /* CSS para garantir que os itens de pesquisa e paginação não quebrem linha */
-            .dataTables_wrapper .dataTables_filter,
-            .dataTables_wrapper .dataTables_length {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                flex-wrap: nowrap !important;
+            .dt-button{
+                padding: 8px 10px !important;
+                margin-top:0px !important;
+                line-height: 0.8em !important; 
             }
-
-            .dataTables_wrapper .dataTables_filter input,
-            .dataTables_wrapper .dataTables_length select {
-                margin-left: 10px;
-            }
-
-            /* Paginate - xs */
-            .dataTables_wrapper .dataTables_paginate {
-                padding-top: .755em;
-                margin-top: 0px;
-            }
-
-            .dataTables_wrapper .dataTables_length,
-            .dataTables_wrapper .dataTables_filter {}
-
-            .dataTables_wrapper .dataTables_length {
-                margin-top: 0px;
-                float: right
-            }
-
-            .dataTables_wrapper .dataTables_filter {
-                margin-top: 0px;
-                float: left
-            }
-
-                @media screen and (max-width: 767px) {
-                .dataTables_wrapper .dataTables_paginate {}
-            }
-
-            @media screen and (max-width: 640px) {
-
-                .dataTables_wrapper .dataTables_length {
-                    float: right
-                }
-
-                .dataTables_wrapper .dataTables_filter {
-                    float: left
-                }
-            }
+            
         </style>
     </x-slot>
 
@@ -128,10 +60,18 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-
+    <script type="module">
         $(document).ready(function () {
             var table = $('#crud-table').DataTable({
+                dom: 'Bflrtip', // Adiciona os botões de exportação
+                buttons: [
+                    {
+                        extend: 'excelHtml5', // Extensão para exportar para Excel
+                        text: '<i class="fas fa-file-excel"></i>', // Texto do botão
+                        title: 'Relatório de Tabela', // Título do arquivo Excel
+                        className: 'dt-button text-sm px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600'
+                    }
+                ],
                 pageLength: 100, // Define a quantidade de registros por página
                 lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
                 scrollY: 'calc(100vh - 360px)', // Define a altura para 65% da altura da tela
@@ -150,11 +90,12 @@
                 pagingType: "simple_numbers",  // Use "simple" para uma paginação mais compacta
                 language: {
                     "paginate": {
-                        "previous": "<<",
-                        "next": ">>"
+                        "previous": '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>',
+                        "next": '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path></svg>'
                     },
-                    lengthMenu: "Exibir_MENU_ <span class=\"hidden sm:inline-block\">registros por página</span><span class=\"inline-block sm:hidden\">/pág.</span>", // Traduz o texto "Show _MENU_ entries"
-                    search: "Buscar:", // Traduz o campo Search
+                    lengthMenu: "Exibir _MENU_ <span class=\"hidden sm:inline-block\">registros por página</span><span class=\"inline-block sm:hidden\">/pág.</span>", // Traduz o texto "Show _MENU_ entries"
+                    search: '', // Traduz o campo Search
+                    searchPlaceholder: "Digite para buscar...", // Adiciona o placeholder
                     info: "Mostrando _START_ até _END_ de _TOTAL_ registros", // Traduz o texto "Showing ... to ... of ..."
                     infoEmpty: "Nenhum registro", // Quando não há registros
                     infoFiltered: "(filtrado de _MAX_ registros no total)" // Mensagem de filtro
@@ -162,12 +103,16 @@
                 },
                 initComplete: function (settings, json) {
                     // Ajustar a aparência da paginação
-                    $(this).closest('.dataTables_wrapper').find('.dataTables_paginate').addClass('flex justify-between items-center space-x-2 text-xs');
-                    $(this).closest('.dataTables_wrapper').find('.paginate_button').addClass('bg-gray-300 text-gray-800 hover:bg-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none px-3 py-1 rounded');
-                    $(this).closest('.dataTables_wrapper').find('.dataTables_info').addClass('hidden md:block text-sm');
+                    $(this).closest('.dt-container').find('.dt-paging').addClass('text-xs justify-self-end mt-2 mb-0');
+                    // $(this).closest('.dt-container').find('.dt-paging-button').addClass('');
+                    $(this).closest('.dt-container').find('.dt-info').addClass('hidden sm:inline-block text-sm justify-self-start float-left mt-4 mb-0');
+                    
+                    $(this).closest('.dt-container').find('.dt-buttons').addClass('inline-block');
+                    $(this).closest('.dt-container').find('.dt-search').addClass('inline-block');
+                    $(this).closest('.dt-container').find('.dt-length').addClass('inline-block justify-self-right float-right');
 
                     // Caso queira evitar que quebre linha, forçando o layout em uma linha
-                    // $('.dataTables_wrapper').addClass('flex flex-nowrap items-center justify-between');
+                    // $('dt-container').addClass('flex flex-nowrap items-center justify-between');
 
                 }
 
@@ -179,6 +124,7 @@
             });
 
         });
+
     </script>
 
 </x-app-layout>
