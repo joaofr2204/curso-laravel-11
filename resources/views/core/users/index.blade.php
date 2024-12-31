@@ -66,20 +66,28 @@
             .dataTables_wrapper .dataTables_length,
             .dataTables_wrapper .dataTables_filter {}
 
-            @media screen and (max-width: 767px) {
+            .dataTables_wrapper .dataTables_length {
+                margin-top: 0px;
+                float: right
+            }
+
+            .dataTables_wrapper .dataTables_filter {
+                margin-top: 0px;
+                float: left
+            }
+
+                @media screen and (max-width: 767px) {
                 .dataTables_wrapper .dataTables_paginate {}
             }
 
             @media screen and (max-width: 640px) {
 
                 .dataTables_wrapper .dataTables_length {
-                    margin-top: 0px;
-                    float: left
+                    float: right
                 }
 
                 .dataTables_wrapper .dataTables_filter {
-                    margin-top: 0px;
-                    float: right
+                    float: left
                 }
             }
         </style>
@@ -124,7 +132,6 @@
 
         $(document).ready(function () {
             var table = $('#crud-table').DataTable({
-
                 pageLength: 100, // Define a quantidade de registros por página
                 lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
                 scrollY: 'calc(100vh - 360px)', // Define a altura para 65% da altura da tela
@@ -146,7 +153,7 @@
                         "previous": "<<",
                         "next": ">>"
                     },
-                    lengthMenu: "Exibir_MENU_ <span class=\"hidden sm:inline-block\">registros por página</span>", // Traduz o texto "Show _MENU_ entries"
+                    lengthMenu: "Exibir_MENU_ <span class=\"hidden sm:inline-block\">registros por página</span><span class=\"inline-block sm:hidden\">/pág.</span>", // Traduz o texto "Show _MENU_ entries"
                     search: "Buscar:", // Traduz o campo Search
                     info: "Mostrando _START_ até _END_ de _TOTAL_ registros", // Traduz o texto "Showing ... to ... of ..."
                     infoEmpty: "Nenhum registro", // Quando não há registros
