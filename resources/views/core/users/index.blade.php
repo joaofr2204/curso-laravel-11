@@ -10,18 +10,29 @@
                 background-position: right 0px center;
                 margin-bottom: 0.7rem;
             }
+
             .dt-container .dt-search .dt-input {
                 line-height: 1.22em !important;
             }
+
             .dt-container .dt-length .dt-input {
                 line-height: 1.36em !important;
             }
-            .dt-button{
+
+            .dt-button {
                 padding: 8px 10px !important;
-                margin-top:0px !important;
-                line-height: 0.8em !important; 
+                margin-top: 0px !important;
+                line-height: 0.8em !important;
             }
-            
+
+            /* Selected row color */
+            table.display.dataTable>tbody>tr.selected>*,
+            table.display.dataTable>tbody>tr.odd.selected>*,
+            table.display.dataTable>tbody>tr.selected:hover>* {
+                box-shadow: inset 0 0 0 9999px #acbad4 !important;
+                color: #333 !important;
+                background-color: #fff !important;
+            }
         </style>
     </x-slot>
 
@@ -76,7 +87,7 @@
                 lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
                 scrollY: 'calc(100vh - 360px)', // Define a altura para 65% da altura da tela
                 scrollCollapse: true, // Permite que a tabela encolha quando houver menos dados
-
+                select: true,
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('users.index') }}",
@@ -106,7 +117,7 @@
                     $(this).closest('.dt-container').find('.dt-paging').addClass('text-xs justify-self-end mt-2 mb-0');
                     // $(this).closest('.dt-container').find('.dt-paging-button').addClass('');
                     $(this).closest('.dt-container').find('.dt-info').addClass('hidden sm:inline-block text-sm justify-self-start float-left mt-4 mb-0');
-                    
+
                     $(this).closest('.dt-container').find('.dt-buttons').addClass('inline-block');
                     $(this).closest('.dt-container').find('.dt-search').addClass('inline-block');
                     $(this).closest('.dt-container').find('.dt-length').addClass('inline-block justify-self-right float-right');
