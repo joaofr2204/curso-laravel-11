@@ -42,7 +42,12 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+    <!-- Toggle Dark Mode -->
+    <x-dropdown-link href="{{ route('toggle-dark-mode') }}" class="flex items-center">
+        <i id="darkModeIcon" class="{{ session('dark_mode', false) ? 'fas fa-sun' : 'fas fa-moon' }} me-2"></i>
+        {{ session('dark_mode', false) ? __('Light Mode') : __('Dark Mode') }}
+    </x-dropdown-link>
+                            <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 

@@ -61,7 +61,7 @@ $(document).ready(function () {
 
             $(this).closest('.dt-container').find('.dt-buttons').addClass('inline-block');
             $(this).closest('.dt-container').find('.dt-search').addClass('inline-block');
-            $(this).closest('.dt-container').find('.dt-length').addClass('inline-block justify-self-right float-right');
+            $(this).closest('.dt-container').find('.dt-length').addClass('inline-block float-right');
 
             // Caso queira evitar que quebre linha, forçando o layout em uma linha
             // $('dt-container').addClass('flex flex-nowrap items-center justify-between');

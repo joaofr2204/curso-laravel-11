@@ -11,6 +11,11 @@ export default {
 
     safelist: [
         'sm:inline-block',
+        'inline-block',
+        'justify-self-end',
+        'justify-self-start',
+        'float-left',
+        'float-right'
     ],
 
     theme: {
