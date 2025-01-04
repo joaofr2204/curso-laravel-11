@@ -2,6 +2,7 @@
 
     <x-slot name="head">
         @vite('resources/js/core/crud-index.js')
+        @routes
     </x-slot>
 
     <x-slot name="header">
@@ -21,11 +22,11 @@
             class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition">
             <i class="fas fa-plus"></i>
         </button>
-        <button onclick="window.location = '{{ route('users.show',':id') }}'" title="Visualizar" id="crud-show-btn"
+        <button onclick="crudForm('show')" title="Visualizar" id="crud-show-btn"
             class="crud-depends-on-id-btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-sm shado-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition">
             <i class="fas fa-eye"></i>
         </button>
-        <button onclick="window.location='{{ route('users.edit',':id') }}'" title="Editar" id="crud-edit-btn"
+        <button onclick="crudForm('edit')" title="Editar" id="crud-edit-btn"
             class="crud-depends-on-id-btn bg-yellow-500 hover:bg-yellow-400 text-white font-semibold py-1 px-3 rounded-sm shado-md focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 transition">
             <i class="fas fa-edit"></i>
         </button>

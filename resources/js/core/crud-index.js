@@ -7,6 +7,7 @@ import '/resources/css/core/crud-index.css' // deixa as customizacoes de css por
 
 import JSZip from 'jszip'; // Para exportação para Excel
 import pdfMake from 'pdfmake/build/pdfmake'; // Para exportação para PDF
+import { route } from 'ziggy-js';
 
 // Tornando as dependências globais
 window.JSZip = JSZip;
@@ -76,28 +77,26 @@ $(document).ready(function () {
 
     //-- CONTROLE DA SELECAO DA LINHA
 
-    let selectedRow = null;
+    window.selectedRow = null;
 
     // Detectar clique em uma linha
     $('#crud-table tbody').on('click', 'tr', function () {
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected');
-            selectedRow = null;
-            //$('.crud-depends-on-id-btn').prop('disabled', true);
+            window.selectedRow = null;
+            $('.crud-depends-on-id-btn').prop('disabled', true);
         } else {
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
-            selectedRow = table.row(this).data();
-            //$('.crud-depends-on-id-btn').prop('disabled', false);
-        }
-    });
-
-    // Manipular clique no botão de visualizar e editar
-    $('#crud-show-btn,#crud-edit-btn').on('click', function (e) {
-        if (selectedRow) {
-            window.location.href = this.href.replace(':id', selectedRow.id);
-            e.preventDefault();
+            window.selectedRow = table.row(this).data();
+            $('.crud-depends-on-id-btn').prop('disabled', false);
         }
     });
 
 });
+
+window.crudForm = function(action){
+    if (window.selectedRow) {
+        window.location.href = route('users.'+action, window.selectedRow.id);
+    }
+}
