@@ -26,7 +26,7 @@ $(document).ready(function () {
         ],
         pageLength: 100, // Define a quantidade de registros por página
         lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
-        scrollY: 'calc(100vh - 360px)', // Define a altura para 65% da altura da tela
+        scrollY: 'calc(100vh - 311px)', // Define a altura para o grid ficar full screen
         scrollCollapse: true, // Permite que a tabela encolha quando houver menos dados
         select: true,
         processing: true,

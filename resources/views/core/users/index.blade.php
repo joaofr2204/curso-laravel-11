@@ -12,33 +12,34 @@
 
     <input id="crud-datatables-index-route" type="hidden" value="{{ route('users.index') }}" />
 
-    <div class=" px-4 py-4">
+    <x-alert />
 
-        <x-alert />
+    {{-- BOTOES CRUD --}}
 
-        <div class="mb-4">
-            <a href="{{ route('users.create') }}" title="Incluir"
-                class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                <i class="fas fa-plus"></i>
-            </a>
-        </div>
+    <div class="my-4 mx-3">
+        <a href="{{ route('users.create') }}" title="Incluir"
+            class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+    
+    {{-- DATATABLES --}}
+    
+    <div
+        class="border border-gray-200 bg-white dark:bg-gray-600 w-full px-3 py-3 min-w-[400px]">
+        <table id="crud-table" class="display cell-border compact text-sm" style="width:100%">
+            <thead class="bg-gray-100 uppercase text-gray-700">
+                <tr>
+                    <th class="border">Nome</th>
+                    <th class="border">E-mail</th>
+                    <th class="border">Ações</th>
+                </tr>
+            </thead>
 
-        <div
-            class="rounded-lg shadow-lg border border-gray-200 bg-white dark:bg-gray-600 w-full px-4 py-4 min-w-[400px]">
-            <table id="crud-table" class="display cell-border compact text-sm" style="width:100%">
-                <thead class="bg-gray-100 uppercase text-gray-700">
-                    <tr>
-                        <th class="border">Nome</th>
-                        <th class="border">E-mail</th>
-                        <th class="border">Ações</th>
-                    </tr>
-                </thead>
+            <tbody>
 
-                <tbody>
-
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
 
 </x-app-layout>
