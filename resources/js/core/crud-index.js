@@ -21,12 +21,12 @@ $(document).ready(function () {
                 extend: 'excelHtml5', // Extensão para exportar para Excel
                 text: '<i class="fas fa-file-excel"></i>', // Texto do botão
                 title: 'Relatório de Tabela', // Título do arquivo Excel
-                className: 'dt-button text-sm px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600'
+                className: 'dt-button text-sm px-3 py-2 bg-green-500 text-white rounded-sm hover:bg-green-600 mr-2'
             }
         ],
         pageLength: 100, // Define a quantidade de registros por página
         lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
-        scrollY: 'calc(100vh - 311px)', // Define a altura para o grid ficar full screen
+        scrollY: 'calc(100vh - 303px)', // Define a altura para o grid ficar full screen
         scrollCollapse: true, // Permite que a tabela encolha quando houver menos dados
         select: true,
         processing: true,
@@ -35,7 +35,6 @@ $(document).ready(function () {
         columns: [
             { data: 'name', name: 'name' },
             { data: 'email', email: 'name' },
-            { data: 'action', action: 'action' }
         ],
         order: [[0, "asc"]], // Ordena pelo primeiro campo
 
@@ -73,6 +72,32 @@ $(document).ready(function () {
     // Após atualizar a tabela via AJAX, ajusta as colunas
     $('#crud-table').on('init.dt', function () {
         table.columns.adjust().draw();
+    });
+
+    //-- CONTROLE DA SELECAO DA LINHA
+
+    let selectedRow = null;
+
+    // Detectar clique em uma linha
+    $('#crud-table tbody').on('click', 'tr', function () {
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+            selectedRow = null;
+            //$('.crud-depends-on-id-btn').prop('disabled', true);
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            selectedRow = table.row(this).data();
+            //$('.crud-depends-on-id-btn').prop('disabled', false);
+        }
+    });
+
+    // Manipular clique no botão de visualizar e editar
+    $('#crud-show-btn,#crud-edit-btn').on('click', function (e) {
+        if (selectedRow) {
+            window.location.href = this.href.replace(':id', selectedRow.id);
+            e.preventDefault();
+        }
     });
 
 });

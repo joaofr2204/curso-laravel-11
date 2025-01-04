@@ -20,10 +20,12 @@ class UserController extends Controller
             $users = User::query();
 
             return DataTables::of($users)
+                /*
                 ->addColumn('action', function ($user) {
                     return view('core.crud-actions', compact('user'))->render();
                 },false)
                 ->rawColumns(['action']) // Tornar a coluna 'action' como HTML
+                */
                 ->make(true);
         }
         return view('core.users.index');
