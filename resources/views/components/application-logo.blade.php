@@ -1,11 +1,19 @@
 <style>
     .sys-logo span {
         font-family: "Gabriola";
-        font-size: 2rem;
+        font-size: 3rem;
         font-weight: bold;
         font-style: italic;
         user-select: none;
-        text-shadow: black 0rem 0rem 0.2rem;
+        text-shadow: -1px -1px 1px black,
+        1px -1px 1px black,
+        -1px 1px 1px black,
+        1px 1px 1px black,
+        
+        -2px -2px 1px #003366,
+        2px -2px 1px #003366,
+        -2px 2px 1px #003366,
+        2px 2px 1px #003366;
         color: #fff;
     }
 </style>
