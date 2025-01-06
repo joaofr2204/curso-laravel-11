@@ -8,6 +8,7 @@ import '/resources/css/core/crud-index.css' // deixa as customizacoes de css por
 import JSZip from 'jszip'; // Para exportação para Excel
 import pdfMake from 'pdfmake/build/pdfmake'; // Para exportação para PDF
 import { route } from 'ziggy-js';
+import Swal from 'sweetalert2';
 
 // Tornando as dependências globais
 window.JSZip = JSZip;
@@ -95,8 +96,8 @@ $(document).ready(function () {
 
 });
 
-window.crudForm = function(action){
+window.crudForm = function (action) {
     if (window.selectedRow) {
-        window.location.href = route('users.'+action, window.selectedRow.id);
+        window.location.href = route('users.' + action, window.selectedRow.id);
     }
 }
