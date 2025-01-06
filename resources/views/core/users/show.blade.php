@@ -20,17 +20,6 @@
         </button>
 
         @can('is-admin')
-            {{--
-            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit"
-                    class="bg-red-500 hover:bg-red-400 text-white font-semibold py-1 px-3 rounded-sm shado-md focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 transition">
-                    <i class="fas fa-trash"></i>
-                    Excluir
-                </button>
-            </form>
-            --}}
 
             <button type="button" data-id="{{ $user->id }}"
                 class="btn-delete bg-red-500 hover:bg-red-400 text-white font-semibold py-1 px-3 rounded-sm shado-md focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 transition">
@@ -55,8 +44,8 @@
             e.preventDefault();
 
             let itemId = $(this).data('id');
-            let url = '{{ route( 'users.destroy' , ':id' ) }}'.replace(':id', itemId);
-            
+            let url = '{{ route('users.destroy', ':id') }}'.replace(':id', itemId);
+
             Swal.fire({
                 title: 'Tem certeza?',
                 text: "Esta ação não pode ser desfeita!",
