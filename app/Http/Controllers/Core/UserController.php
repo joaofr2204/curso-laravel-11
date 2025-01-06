@@ -2,54 +2,21 @@
 
 namespace App\Http\Controllers\Core;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\CrudController;
 use App\Http\Requests\Core\StoreUserRequest;
 use App\Http\Requests\Core\UpdateUserRequest;
 use App\Models\Core\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Yajra\DataTables\DataTables;
 
-class UserController extends Controller
+class UserController extends CrudController
 {
-    //
-    public function index(Request $request)
-    {
-        if ($request->ajax()) {
-            $users = User::query();
-
-            return DataTables::of($users)
-                /*
-                ->addColumn('action', function ($user) {
-                    return view('core.crud-actions', compact('user'))->render();
-                },false)
-                ->rawColumns(['action']) // Tornar a coluna 'action' como HTML
-                */
-                ->make(true);
-        }
-        return view('core.users.index');
-    }
-
-    public function create()
-    {
-        return view('core.users.create');
-    }
-
-    public function store(StoreUserRequest $request)
-    {
-        User::create($request->validated());
-
-        return redirect()->route('users.index')
-            ->with('success', 'Usuário criado com sucesso!');
-    }
 
     public function show($id)
     {
         if (!$user = User::find($id)) {
             return redirect()->route('users.index')->with('warning', 'Usuário não encontrado');
         }
-        ;
         return view('core.users.show', compact('user'));
     }
 
