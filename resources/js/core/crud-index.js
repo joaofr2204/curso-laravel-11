@@ -109,7 +109,7 @@ $(document).ready(function () {
         let tab_head = $('#crud-table').closest('.dt-scroll').find('.dt-scroll-headInner>table');
 
         tab_head.find('th').append(
-            $('<div>').addClass('dt-column-resizer')
+            $('<span>').addClass('dt-column-resizer')
         ).find('.dt-column-resizer').on('mousedown', function (e) {
 
             isResizing = true; // Inicia o redimensionamento
