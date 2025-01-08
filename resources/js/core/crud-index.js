@@ -15,19 +15,20 @@ window.JSZip = JSZip;
 window.pdfMake = pdfMake;
 
 //-- crud datatables initaialization
-$(document).ready(function () {
+$(function () {
 
     var table = $('#crud-table').DataTable({
         dom: 'Bflrtip', // Adiciona os botões de exportação
         pageLength: 100, // Define a quantidade de registros por página
         lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
         scrollY: 'calc(100vh - 303px)', // Define a altura para o grid ficar full screen
-        scrollCollapse: true, // Permite que a tabela encolha quando houver menos dados
+        
+        scrollCollapse: false, // Permite que a tabela encolha quando houver menos dados
         select: true,
         processing: true,
         serverSide: true,
 
-        responsive: true,
+        // responsive: true,
         autoWidth: false,
 
         ajax: $('#crud-datatables-index-route').val(),
@@ -64,17 +65,14 @@ $(document).ready(function () {
             // $(this).closest('.dt-container').find('.dt-paging-button').addClass('');
             $(this).closest('.dt-container').find('.dt-info').addClass('hidden sm:inline-block text-sm justify-self-start float-left mt-4 mb-0');
 
-            // Caso queira evitar que quebre linha, forçando o layout em uma linha
-            // $('dt-container').addClass('flex flex-nowrap items-center justify-between');
             // Prevenir a ordenação enquanto redimensiona
-
             $('#crud-table').closest('.dt-scroll').find('.dt-scroll-headInner>table th').on('click', function (e) {
                 if (isResizing) {
                     e.stopPropagation();// Impede a ordenação se estiver redimensionando
                 }
             });
 
-
+            // scroll-x
             $('.dt-scroll-body').on('scroll', function () {
                 // Sincroniza o scroll horizontal do cabeçalho com o corpo
                 const scrollLeft = $(this).scrollLeft();
@@ -85,13 +83,11 @@ $(document).ready(function () {
 
     });
 
-    // Após atualizar a tabela via AJAX, ajusta as colunas
-    $('#crud-table').on('init.dt', function () {
-        table.columns.adjust().draw();
-    });
 
-    $(window).on('resize',function(){
-        table.columns.adjust().draw();
+
+    $(window).on('resize',function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
     });
 
     //-- RESIZE COLUMNS CONTROL
@@ -153,29 +149,27 @@ $(document).ready(function () {
     // Iniciar a funcionalidade de redimensionamento
     resizeColumns();
 
-
-
-
-
-
-
     //-- SELECT LINE CONTROL
 
     window.selectedRow = null;
 
     // Detectar clique em uma linha
-    $('#crud-table tbody').on('click', 'tr', function () {
-        if ($(this).hasClass('selected')) {
-            $(this).removeClass('selected');
-            window.selectedRow = null;
-            $('.crud-depends-on-id-btn').prop('disabled', true);
-        } else {
+    $('#crud-table tbody tr').on('click', function () {
+        if (!$(this).hasClass('selected')) {
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             window.selectedRow = table.row(this).data();
-            $('.crud-depends-on-id-btn').prop('disabled', false);
         }
+    })
+
+    table.on('draw', function() {
+        // Desmarcar qualquer seleção anterior
+        table.rows().deselect();
+
+        // Selecionar a primeira linha
+        table.row(0).select();
     });
+       
 
 });
 
