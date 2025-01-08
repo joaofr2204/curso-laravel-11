@@ -80,7 +80,7 @@ $(function () {
             });
 
             $('.dt-scroll-headInner .dataTable').width('');
-            
+
         }
 
     });
@@ -171,6 +171,9 @@ $(function () {
         // Selecionar a primeira linha
         table.row(0).select();
         window.selectedRow = table.row(0).data();
+
+        $('.dt-scroll-headInner .dataTable').width('');
+
     });
        
 
