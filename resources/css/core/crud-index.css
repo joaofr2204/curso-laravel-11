@@ -39,18 +39,37 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 
 .dt-column-resizer{
     top:0px;
-    right: 0px;
+    right: -5px;
     height: 27px;
     width:10px;
     cursor:w-resize;
     float: right;
     position: absolute;
+    z-index: 10;
     /* background-color: red; */
 }
 .dt-column-resizer:hover{
     background-color: rgba(0,100,200,0.1);
 }
+
+.dt-column-title{
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+#crud-table{
+    table-layout: fixed;
+}
+#crud-table colgroup col,
+.dt-scroll-headInner table colgroup col{
+    min-width: 25px;
+}
+
+
 .dt-scroll-headInner table{
+    table-layout: fixed;
     margin: 0 auto !important;
 }
 .dt-scroll-headInner{
@@ -65,14 +84,6 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 }
 .dt-scroll{
     overflow-x: auto;
-}
-
-.dt-scroll-headInner table th{
-    text-overflow: ellipsis;
-    overflow: hidden;
-    text-wrap: nowrap;
-    max-width: 30px;
-    min-width: 10px;
 }
 
 #crud-table td{
