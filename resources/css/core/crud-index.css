@@ -1,4 +1,27 @@
+
+
+
 /* BUTTONS AND FILTERS */
+
+/*
+// Ajustar a aparência da paginação
+$(this).closest('.dt-container').find('.dt-paging').addClass('text-xs justify-self-end mt-2 mb-0');
+// $(this).closest('.dt-container').find('.dt-paging-button').addClass('');
+$(this).closest('.dt-container').find('.dt-info').addClass('hidden sm:inline-block text-sm justify-self-start float-left mt-4 mb-0');
+
+$(this).closest('.dt-container').find('.dt-buttons').addClass('inline-block');
+$(this).closest('.dt-container').find('.dt-search').addClass('inline-block');
+$(this).closest('.dt-container').find('.dt-length').addClass('inline-block float-right');
+*/
+
+.dt-buttons,
+.dt-search,
+.dt-length{
+    display: inline-block !important;
+}
+.dt-length{
+    float:right !important;
+}
 
 .dt-container select.dt-input {
     padding: 4px 20px 4px 4px !important;
