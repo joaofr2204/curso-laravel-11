@@ -172,7 +172,7 @@ $(function () {
         table.row(0).select();
         window.selectedRow = table.row(0).data();
 
-        $('.dt-scroll-headInner .dataTable').width('');
+        //$('.dt-scroll-headInner .dataTable').width('');
 
     });
        
