@@ -1,6 +1,3 @@
-
-
-
 /* BUTTONS AND FILTERS */
 
 .dt-buttons,
@@ -53,7 +50,7 @@ table.display.dataTable>tbody>tr.selected:hover>* {
     top:0px;
     right: -5px;
     height: 27px;
-    width:10px;
+    width:11px;
     cursor:w-resize;
     float: right;
     position: absolute;
@@ -119,6 +116,9 @@ table.dataTable thead>tr>td.dt-orderable-desc,
 table.dataTable thead>tr>td.dt-ordering-asc, 
 table.dataTable thead>tr>td.dt-ordering-desc {
     padding-right: 0px !important;
+}
+table.dataTable .dt-column-order{
+    right: 5px !important;
 }
 
 /* Estilizar barras de rolagem para navegadores baseados no WebKit (Chrome, Edge, Safari) */
