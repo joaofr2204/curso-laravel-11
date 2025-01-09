@@ -11,14 +11,14 @@
         </h2>
     </x-slot>
 
-    <input id="crud-datatables-index-route" type="hidden" value="{{ route('users.index') }}" />
+    <input id="crud-datatables-index-route" type="hidden" value="{{ route( "{$model->getTable()}.index") }}" />
 
     <x-alert />
 
     {{-- BOTOES CRUD --}}
 
     <div class="my-2 mx-3">
-        <button onclick="window.location = '{{ route('users.create') }}'" title="Incluir"
+        <button onclick="window.location = '{{ route( "{$model->getTable()}.create") }}'" title="Incluir"
             class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition">
             <i class="fas fa-plus"></i>
         </button>

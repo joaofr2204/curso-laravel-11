@@ -48,7 +48,7 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 
 .dt-column-resizer{
     top:0px;
-    right: -5px;
+    right: -6px;
     height: 27px;
     width:11px;
     cursor:w-resize;

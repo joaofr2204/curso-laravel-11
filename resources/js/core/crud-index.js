@@ -155,14 +155,13 @@ $(function () {
 
     window.selectedRow = null;
 
-    // Detectar clique em uma linha
-    $('#crud-table tbody tr').on('click', function () {
-        if (!$(this).hasClass('selected')) {
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            window.selectedRow = table.row(this).data();
+    // Captura o evento de seleção de linha
+    table.on('select.dt', function (e, dt, type, indexes) {
+        if (type === 'row') {
+            // Obtém os dados da linha selecionada
+            window.selectedRow = table.row(indexes).data();
         }
-    })
+    });
 
     table.on('draw', function() {
         // Desmarcar qualquer seleção anterior
@@ -170,7 +169,6 @@ $(function () {
 
         // Selecionar a primeira linha
         table.row(0).select();
-        window.selectedRow = table.row(0).data();
 
         //$('.dt-scroll-headInner .dataTable').width('');
 
