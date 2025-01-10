@@ -49,7 +49,7 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 .dt-column-resizer{
     top:0px;
     right: -6px;
-    height: 27px;
+    height: 28px;
     width:11px;
     cursor:w-resize;
     float: right;
@@ -76,7 +76,6 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 .dt-scroll-headInner table colgroup col{
     min-width: 25px;
 }
-
 
 .dt-scroll-headInner table{
     table-layout: fixed;

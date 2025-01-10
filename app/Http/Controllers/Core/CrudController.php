@@ -63,6 +63,10 @@ abstract class CrudController extends Controller
         return Str::plural(Str::snake($tableName));
     }
 
+    /**
+     * Default CRUD routes
+     * @return void
+     */
     public static function routes()
     {
         $table = self::getTableName();
