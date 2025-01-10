@@ -2,14 +2,24 @@
 
 namespace App\Models\Core;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Core\BaseModel;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
-class User extends Authenticatable
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+class User extends BaseModel implements
+AuthenticatableContract,
+AuthorizableContract,
+CanResetPasswordContract
 {
+    use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
+    
     use HasFactory, Notifiable, SoftDeletes;
 
     /**
@@ -45,4 +55,5 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
 }

@@ -25,7 +25,6 @@ class DatabaseSeeder extends Seeder
     }
 
     private static function createDefaultAdmin(){
-
         User::factory()->create([
             'username' => 'admin',
             'name' => 'Administrator',

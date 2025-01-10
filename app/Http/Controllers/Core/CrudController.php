@@ -65,6 +65,7 @@ abstract class CrudController extends Controller
 
     /**
      * Default CRUD routes
+     *
      * @return void
      */
     public static function routes()
@@ -95,7 +96,8 @@ abstract class CrudController extends Controller
                 */
                 ->make(true);
         }
-
+        $this->model->getColumns('grid');
+        
         $view = view()->exists("{$this->view}.index") ? "{$this->view}.index" : "core.crud.index";
 
         return view($view, ['model' => $this->model]);

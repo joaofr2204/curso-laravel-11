@@ -11,14 +11,14 @@
         </h2>
     </x-slot>
 
-    <input id="crud-datatables-index-route" type="hidden" value="{{ route( "{$model->getTable()}.index") }}" />
+    <input id="crud-datatables-index-route" type="hidden" value="{{ route("{$model->getTable()}.index") }}" />
 
     <x-alert />
 
     {{-- BOTOES CRUD --}}
 
     <div class="my-2 mx-3">
-        <button onclick="window.location = '{{ route( "{$model->getTable()}.create") }}'" title="Incluir"
+        <button onclick="window.location = '{{ route("{$model->getTable()}.create") }}'" title="Incluir"
             class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition">
             <i class="fas fa-plus"></i>
         </button>
@@ -34,12 +34,19 @@
 
     {{-- DATATABLES --}}
 
+    @php
+        $columns = $model->getColumns('grid');
+    @endphp
+
+    <input type="hidden" id="crud-datatables-columns" value="{{ json_encode($columns) }}" />
+
     <div class="border border-gray-200 bg-white dark:bg-gray-600 w-full px-3 py-3 min-w-[400px]">
         <table id="crud-table" class="display cell-border compact text-sm" style="width:100%">
             <thead class="bg-gray-100 uppercase text-gray-700">
                 <tr>
-                    <th class="border">Nome</th>
-                    <th class="border">E-mail</th>
+                    @foreach ($columns as $column)
+                        <th class="border">{{ $column['name'] }}</th>
+                    @endforeach
                 </tr>
             </thead>
 

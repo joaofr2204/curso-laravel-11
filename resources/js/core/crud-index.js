@@ -41,10 +41,7 @@ $(function () {
                 className: 'dt-button text-sm px-3 py-2 bg-green-500 text-white rounded-sm hover:bg-green-600 mr-2'
             }
         ],
-        columns: [
-            { data: 'name', name: 'name' },
-            { data: 'email', email: 'name' },
-        ],
+        columns: JSON.parse($('#crud-datatables-columns').val()),
         pagingType: "simple_numbers",  // Use "simple" para uma paginação mais compacta
         language: {
             "paginate": {
