@@ -109,7 +109,7 @@ $(function () {
 
             const columnIndex = $(this).parent('th').index(); // Índice da coluna
 
-            startWidth = tab_head.find('colgroup').find('col').eq(columnIndex).width();
+            newWidth = startWidth = tab_head.find('colgroup').find('col').eq(columnIndex).width();
             
             // Ao arrastar o mouse, redimensiona a coluna
             $(document).on('mousemove', function (e) {

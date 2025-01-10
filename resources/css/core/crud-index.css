@@ -120,7 +120,7 @@ table.dataTable thead>tr>td.dt-ordering-desc {
     padding-right: 0px !important;
 }
 table.dataTable .dt-column-order{
-    right: 5px !important;
+    right: 4px !important;
 }
 
 /* Estilizar barras de rolagem para navegadores baseados no WebKit (Chrome, Edge, Safari) */
@@ -140,4 +140,10 @@ table.dataTable .dt-column-order{
 
 .dt-scroll-headInner::-webkit-scrollbar-track {
     background-color: transparent; /* Cor do fundo da barra de rolagem */
+}
+
+/* NUMERIC MODIFICATION */
+
+table.dataTable th .dt-column-title{
+    margin-right:22px
 }
