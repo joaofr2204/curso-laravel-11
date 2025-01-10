@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Core;
 
 use App\Http\Controllers\Controller;
-// use App\Http\Requests\Core\StoreUserRequest;
-// use App\Models\Core\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Str;
 
 abstract class CrudController extends Controller
 {
-    protected $model;
-    protected $view;
+    protected Model $model;
+    protected string $view;
 
     public function __construct()
     {
@@ -55,8 +55,30 @@ abstract class CrudController extends Controller
         return implode('.', $parts);
     }
 
+    protected static function getTableName(): string
+    {
+        $fullClassName = get_called_class();
+        $controllerName = class_basename($fullClassName);
+        $tableName = str_replace('Controller', '', $controllerName);
+        return Str::plural(Str::snake($tableName));
+    }
+
+    public static function routes()
+    {
+        $table = self::getTableName();
+
+        Route::get("/$table", [get_called_class(), 'index'])->name("$table.index");
+        Route::get("/$table/create", [get_called_class(), 'create'])->name("$table.create");
+        Route::get("/$table/{id}", [get_called_class(), 'show'])->name("$table.show");
+        Route::post("/$table", [get_called_class(), 'store'])->name("$table.store");
+        Route::get("/$table/{id}/edit", [get_called_class(), 'edit'])->name("$table.edit");
+        Route::put("/$table/{id}", [get_called_class(), 'update'])->name("$table.update");
+        Route::delete("/$table/{id}/destroy", [get_called_class(), 'destroy'])->name("$table.destroy");
+    }
+
     public function index(Request $request)
     {
+        //-- aqui fornece os dados para listagem
         if ($request->ajax()) {
             $list = $this->model::query();
 
@@ -93,14 +115,13 @@ abstract class CrudController extends Controller
         return view($view, ['model' => $this->model]);
     }
 
-    // public function store(StoreUserRequest $request)
     public function store(Request $request)
     {
         // Valida os dados
         $validatedData = ($requestClass = $this->requestClassExists())
-        ? app($requestClass)->validated()
-        : $request->all();
-        
+            ? app($requestClass)->validated()
+            : $request->all();
+
         // Cria o registro no banco de dados
         $this->model::create($validatedData);
 
@@ -108,8 +129,9 @@ abstract class CrudController extends Controller
             ->with('success', 'Registro inserido com sucesso!');
     }
 
-    private function requestClassExists(){
-        
+    private function requestClassExists()
+    {
+
         // Obter informações da pilha de chamadas
         $backtrace = debug_backtrace();
 
@@ -164,12 +186,12 @@ abstract class CrudController extends Controller
 
         // Valida os dados
         $validatedData = ($requestClass = $this->requestClassExists())
-        ? app($requestClass)->validated()
-        : $request->all();
-        
+            ? app($requestClass)->validated()
+            : $request->all();
+
         //if ($validatedData['password']) {
         //    $validatedData['password'] = bcrypt($validatedData->password);
-       // }
+        // }
 
         $model->update($validatedData);
 
@@ -185,6 +207,6 @@ abstract class CrudController extends Controller
         $model->delete();
 
         return redirect()->route("{$this->model->getTable()}.index")->with('success', 'Registro deletado com sucesso');
-    }    
+    }
 
 }

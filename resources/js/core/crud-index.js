@@ -177,8 +177,8 @@ $(function () {
 
 });
 
-window.crudForm = function (action) {
+window.crudForm = function (model,action) {
     if (window.selectedRow) {
-        window.location.href = route('users.' + action, window.selectedRow.id);
+        window.location.href = route(model + '.' + action, window.selectedRow.id);
     }
 }
