@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core;
 
-use App\Http\Controllers\Core\CrudController;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends CrudController

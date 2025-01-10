@@ -71,7 +71,7 @@ abstract class CrudController extends Controller
     public static function routes()
     {
         $table = self::getTableName();
-
+        
         Route::get("/$table", [get_called_class(), 'index'])->name("$table.index");
         Route::get("/$table/create", [get_called_class(), 'create'])->name("$table.create");
         Route::get("/$table/{id}", [get_called_class(), 'show'])->name("$table.show");

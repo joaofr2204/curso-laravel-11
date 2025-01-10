@@ -4,9 +4,8 @@ namespace App\Models\Core;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Sysdb extends Model
+class Sysdb extends BaseModel
 {
-
     public static function ofModel(Model $model)
     {
 

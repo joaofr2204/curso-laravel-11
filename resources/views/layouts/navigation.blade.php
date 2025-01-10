@@ -18,6 +18,15 @@
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users')">
                         {{ __('Usuários') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('sysdbs.index')" :active="request()->routeIs('sysdbs')">
+                        {{ __('Databases') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('systables.index')" :active="request()->routeIs('systables')">
+                        {{ __('Tabelas') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('syscolumns.index')" :active="request()->routeIs('syscolumns')">
+                        {{ __('Colunas') }}
+                    </x-nav-link>
                 </div>
             </div>
 
