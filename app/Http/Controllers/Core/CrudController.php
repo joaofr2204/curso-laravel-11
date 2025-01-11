@@ -177,6 +177,8 @@ abstract class CrudController extends Controller
             return redirect()->route("{$this->model->getTable()}.index")->with('warning', 'Registro não encontrado');
         }
 
+        // dd($this->model->getColumns('form','create'));
+
         $view = view()->exists("{$this->view}.edit") ? "{$this->view}.edit" : "core.crud.edit";
 
         return view($view, ['model' => $model]);

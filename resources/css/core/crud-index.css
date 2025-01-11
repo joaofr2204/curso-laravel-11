@@ -74,7 +74,7 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 }
 #crud-table colgroup col,
 .dt-scroll-headInner table colgroup col{
-    min-width: 25px;
+    min-width: 15px;
 }
 
 .dt-scroll-headInner table{
@@ -102,7 +102,7 @@ table.display.dataTable>tbody>tr.selected:hover>* {
     overflow: hidden;
     text-wrap: nowrap;
     max-width: 30px;
-    min-width: 10px;
+    min-width: 15px;
 }
 
 #crud-table thead th{

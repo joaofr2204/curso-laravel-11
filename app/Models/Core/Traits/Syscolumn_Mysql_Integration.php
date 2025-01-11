@@ -49,7 +49,6 @@ trait Syscolumn_Mysql_Integration
         $s->form_on_create = true;
         $s->form_on_read = true;
         $s->form_on_update = true;
-        $s->form_on_delete = true;
         $s->form_on_revise = true;
         $s->grid = true;
         $s->grid_order = static::nextOrder($table, 'grid_order');
@@ -66,7 +65,6 @@ trait Syscolumn_Mysql_Integration
             $s->form_on_create = 0;
             $s->form_on_read = 0;
             $s->form_on_update = 0;
-            $s->form_on_delete = 0;
             $s->form_on_revise = 0;
             $s->grid = 0;
         }
@@ -98,7 +96,6 @@ trait Syscolumn_Mysql_Integration
             $s->form_on_create = 0;
             $s->form_on_read = 0;
             $s->form_on_update = 0;
-            $s->form_on_delete = 0;
             $s->form_on_revise = 0;
             $s->grid = 0;
 

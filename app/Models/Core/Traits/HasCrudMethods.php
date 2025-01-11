@@ -9,7 +9,7 @@ use App\Models\Core\Systable;
 trait HasCrudMethods
 {
 
-    public function getColumns($op)
+    public function getColumns($op, $action = '')
     {
         //-- FAZ IMPORTACAO AUTOMATICA, PENSAR EM ALGO QUE NAO FAÇA TODAS AS VEZES
         Sysdb::importDb($this);
@@ -17,26 +17,42 @@ trait HasCrudMethods
         Syscolumn::importMysqlColumns($this);
 
         $columns = Syscolumn::when(
-            $op == 'grid', function ($query) {
+            $op == 'grid',
+            function ($query) {
                 $query->where('grid', 1);
             }
         )->when(
-            $op == 'form', function ($query) use ($op) {
-                    $query->where("form_on_{$op}", 1);
-            }
-        )->where('table', $this->getTable())
-        ->whereNotIn('name', $this->hidden)
-        ->get()->toArray();
+                $op == 'form',
+                function ($query) use ($action) {
+                    $query->where("form_on_{$action}", 1);
+                }
+            )->where('table', $this->getTable())
+            ->whereNotIn('name', $this->hidden)
+            ->get()->toArray();
 
-        $formattedColumns = array_map(
-            function ($column) {
-                return [
-                'data' => $column['name'],
-                'name' => $column['name']
-                ];
-            }, $columns
-        );
-       
+        if ($op == 'grid') {
+            $formattedColumns = array_map(
+                function ($column) {
+                    return [
+                        'data' => $column['name'],
+                        'name' => $column['name'],
+                        'width' => $column['grid_width']
+                    ];
+                },
+                $columns
+            );
+        } else { 
+            
+            // form
+            
+            $formattedColumns = array_filter(
+                $columns,
+                function ($column) use ($action) {
+                    return $column["form_on_{$action}"]; // filter by form_on_create, form_on_read, form_on_update, form_on_revise
+                }
+            );
+        }
+
         return $formattedColumns;
 
     }

@@ -65,7 +65,6 @@ return new class extends Migration
             $table->boolean('form_on_create')->default(true);
             $table->boolean('form_on_read')->default(true);
             $table->boolean('form_on_update')->default(true);
-            $table->boolean('form_on_delete')->default(true);
             $table->boolean('form_on_revise')->default(true);
             $table->integer('form_order');
             $table->enum('form_align',['left','right','center'])->default('left');
