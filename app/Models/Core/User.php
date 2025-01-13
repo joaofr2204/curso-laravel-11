@@ -14,24 +14,13 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 class User extends BaseModel implements
-AuthenticatableContract,
-AuthorizableContract,
-CanResetPasswordContract
+    AuthenticatableContract,
+    AuthorizableContract,
+    CanResetPasswordContract
 {
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
-    
-    use HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -56,4 +45,16 @@ CanResetPasswordContract
         ];
     }
 
+    public function onCreateSyscolumn(&$column)
+    {
+        if ($column->name == 'remember_token') {
+            $column->form_on_create = 0;
+            $column->grid = 0;
+        } elseif ($column->name == 'email_verified_at') {
+            $column->form_on_create = 0;
+            // $column->grid = 0;
+        } elseif ($column->name == 'password') {
+            $column->grid = 0;
+        }
+    }
 }

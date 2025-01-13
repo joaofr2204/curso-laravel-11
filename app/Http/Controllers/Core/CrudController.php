@@ -3,26 +3,34 @@
 namespace App\Http\Controllers\Core;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Core\StoreCrudRequest;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\DataTables;
-use Illuminate\Support\Str;
 
 abstract class CrudController extends Controller
 {
+    /**
+     * The model instance
+     * @var Model
+     */
     protected Model $model;
-    protected string $view;
 
     public function __construct()
     {
+        parent::__construct();
         $this->model = $this->getModel();
-        $this->view = $this->getView();
     }
 
+    /**
+     * Get the model instance from the controller class name
+     * @throws \Exception
+     * @return \Illuminate\Database\Eloquent\Model
+     */
     protected function getModel(): Model
     {
-        // Substitui 'Http\\Controllers' por 'Models' e ajusta o namespace
         $modelClass = str_replace(
             ['App\\Http\\Controllers', 'Controllers', 'Controller'],
             ['App\\Models', 'Models', ''],
@@ -36,33 +44,6 @@ abstract class CrudController extends Controller
         throw new \Exception("Model class $modelClass does not exist.");
     }
 
-    protected function getView(): string
-    {
-        // Substitui 'Http\\Controllers' e ajusta o namespace para gerar a view
-        $namespace = str_replace(
-            ['App\\Http\\Controllers', 'Controllers', 'Controller'],
-            ['', '', ''],
-            get_called_class()
-        );
-
-        // Converte para notação de view (com pontos) e ajusta a tabela
-        $view = strtolower(str_replace('\\', '.', ltrim($namespace, '\\')));
-        $parts = explode('.', $view);
-
-        // Substitui o último segmento pelo nome da tabela
-        $parts[count($parts) - 1] = $this->model->getTable();
-
-        return implode('.', $parts);
-    }
-
-    protected static function getTableName(): string
-    {
-        $fullClassName = get_called_class();
-        $controllerName = class_basename($fullClassName);
-        $tableName = str_replace('Controller', '', $controllerName);
-        return Str::plural(Str::snake($tableName));
-    }
-
     /**
      * Default CRUD routes
      *
@@ -71,7 +52,7 @@ abstract class CrudController extends Controller
     public static function routes()
     {
         $table = self::getTableName();
-        
+
         Route::get("/$table", [get_called_class(), 'index'])->name("$table.index");
         Route::get("/$table/create", [get_called_class(), 'create'])->name("$table.create");
         Route::get("/$table/{id}", [get_called_class(), 'show'])->name("$table.show");
@@ -81,8 +62,14 @@ abstract class CrudController extends Controller
         Route::delete("/$table/{id}/destroy", [get_called_class(), 'destroy'])->name("$table.destroy");
     }
 
+    /**
+     * Show the datagrid listing all records
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
     {
+        $this->model->getSysColumns('grid');
         //-- aqui fornece os dados para listagem
         if ($request->ajax()) {
             $list = $this->model::query();
@@ -96,8 +83,7 @@ abstract class CrudController extends Controller
                 */
                 ->make(true);
         }
-        $this->model->getColumns('grid');
-        
+
         $view = view()->exists("{$this->view}.index") ? "{$this->view}.index" : "core.crud.index";
 
         return view($view, ['model' => $this->model]);
@@ -118,15 +104,15 @@ abstract class CrudController extends Controller
     {
         $view = view()->exists("{$this->view}.create") ? "{$this->view}.create" : "core.crud.create";
 
+        // dd($this->model->getSysColumns('form', 'create'));
+
         return view($view, ['model' => $this->model]);
     }
 
     public function store(Request $request)
     {
         // Valida os dados
-        $validatedData = ($requestClass = $this->requestClassExists())
-            ? app($requestClass)->validated()
-            : $request->all();
+        $validatedData = $this->receiveRequest($request);
 
         // Cria o registro no banco de dados
         $this->model::create($validatedData);
@@ -135,7 +121,74 @@ abstract class CrudController extends Controller
             ->with('success', 'Registro inserido com sucesso!');
     }
 
-    private function requestClassExists()
+    public function edit(string $id)
+    {
+        if (!$model = $this->model::find($id)) {
+            return redirect()->route("{$this->model->getTable()}.index")->with('warning', 'Registro não encontrado');
+        }
+
+        // dd($this->model->getSysColumns('form','create'));
+
+        $view = view()->exists("{$this->view}.edit") ? "{$this->view}.edit" : "core.crud.edit";
+
+        return view($view, ['model' => $model]);
+
+    }
+
+    public function update(Request $request, string $id)
+    {
+
+        if (!$model = $this->model::find($id)) {
+            return redirect()->route("{$this->model->getTable()}.index")->with('warning', 'Registro não encontrado');
+        }
+
+        $validatedData = $this->receiveRequest($request);
+
+        $model->update($validatedData);
+
+        return redirect()->route("{$this->model->getTable()}.index")->with('success', 'Registro atualizado com sucesso');
+    }
+
+    public function destroy(string $id)
+    {
+        if (!$model = $this->model::find($id)) {
+            return redirect()->route("{$this->model->getTable()}.index")->with('warning', 'Registro não encontrado!');
+        }
+
+        $model->delete();
+
+        return redirect()->route("{$this->model->getTable()}.index")->with('success', 'Registro deletado com sucesso');
+    }
+
+    protected function receiveRequest(Request $request): array
+    {
+        $action = $request->method() == 'PUT' ? 'edit' : 'create';
+        $columns = $this->model->getSysColumns('form', $action);
+
+        $validatedData = [];
+        foreach ($columns as $column) {
+            $name = $column['name'];
+
+            if ($column['type'] == 'PW') {
+                $validatedData[$name] = bcrypt($request->input($name));
+
+                //-- check if is a checkbox
+                //}elseif ($column['type'] == 'CH') {
+                //  $validatedData[$name] = $request->input($name) == 'on' ? 1 : 0;
+
+            } else {
+                $validatedData[$name] = $request->input($name);
+            }
+        }
+
+        return $validatedData;
+    }
+
+    /**
+     * Checks if a Request class exists for the current action
+     * @return bool|string
+     */
+    protected function requestClassExists()
     {
 
         // Obter informações da pilha de chamadas
@@ -170,51 +223,5 @@ abstract class CrudController extends Controller
         return class_exists($requestClass) ? $requestClass : false;
     }
 
-
-    public function edit(string $id)
-    {
-        if (!$model = $this->model::find($id)) {
-            return redirect()->route("{$this->model->getTable()}.index")->with('warning', 'Registro não encontrado');
-        }
-
-        // dd($this->model->getColumns('form','create'));
-
-        $view = view()->exists("{$this->view}.edit") ? "{$this->view}.edit" : "core.crud.edit";
-
-        return view($view, ['model' => $model]);
-
-    }
-
-    public function update(Request $request, string $id)
-    {
-
-        if (!$model = $this->model::find($id)) {
-            return redirect()->route("{$this->model->getTable()}.index")->with('warning', 'Registro não encontrado');
-        }
-
-        // Valida os dados
-        $validatedData = ($requestClass = $this->requestClassExists())
-            ? app($requestClass)->validated()
-            : $request->all();
-
-        //if ($validatedData['password']) {
-        //    $validatedData['password'] = bcrypt($validatedData->password);
-        // }
-
-        $model->update($validatedData);
-
-        return redirect()->route("{$this->model->getTable()}.index")->with('success', 'Registro atualizado com sucesso');
-    }
-
-    public function destroy(string $id)
-    {
-        if (!$model = $this->model::find($id)) {
-            return redirect()->route("{$this->model->getTable()}.index")->with('warning', 'Registro não encontrado!');
-        }
-
-        $model->delete();
-
-        return redirect()->route("{$this->model->getTable()}.index")->with('success', 'Registro deletado com sucesso');
-    }
 
 }

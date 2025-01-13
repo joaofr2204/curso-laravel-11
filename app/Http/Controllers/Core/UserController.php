@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\Http\Requests\Core\StoreUserRequest;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends CrudController
@@ -16,5 +19,6 @@ class UserController extends CrudController
 
         parent::destroy($id);
     }
+
 
 }

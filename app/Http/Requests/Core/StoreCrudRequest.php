@@ -3,11 +3,9 @@
 namespace App\Http\Requests\Core;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class StoreCrudRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -23,23 +21,11 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
+//        $table = str_replace('/','',request()->requestUri);
 
         return [
+            //
             'active' => 'boolean',
-            'name' => 'required|string|min:3|max:255',
-            'email' => 
-            [
-                'required',
-                'email',
-                'min:3',
-                'max:255',
-                Rule::unique('users','email')->ignore(request('id')), // Validação para evitar duplicados
-            ],
-            'password' => [
-                'required',
-                'string',
-                'min:8'
-            ]
         ];
     }
 }

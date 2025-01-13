@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseModel extends Model
 {
     use HasCrudMethods;
+    protected $guarded = ['id','created_at','updated_at', 'deleted_at'];
 }

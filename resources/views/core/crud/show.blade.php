@@ -13,7 +13,7 @@
     <div class="container mx-auto px-4 pt-4">
 
         <!-- Botão de Voltar -->
-        <button type="button" onclick="window.location = '{{ route('users.index') }}'"
+        <button type="button" onclick="window.location = '{{ route("{$model->getTable()}.index") }}'"
             class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-500 py-1 px-3 ">
             <i class="fas fa-arrow-left"></i>
             Voltar
@@ -45,7 +45,7 @@
             e.preventDefault();
 
             let itemId = $(this).data('id');
-            let url = '{{ route('users.destroy', ':id') }}'.replace(':id', itemId);
+            let url = '{{ route("{$model->getTable()}.destroy", ':id') }}'.replace(':id', itemId);
 
             Swal.fire({
                 title: 'Tem certeza?',
@@ -71,12 +71,10 @@
                                 response.success,
                                 'success'
                             ).then((result) => {
-                                window.location = '{{ route('users.index') }}';
+                                window.location = '{{ route("{$model->getTable()}.index") }}';
                             });
                         },
                         error: function (xhr) {
-                            debugger;
-
                             Swal.fire(
                                 'Erro!',
                                 'Não foi possível excluir o item.',

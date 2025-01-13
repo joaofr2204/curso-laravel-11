@@ -7,7 +7,7 @@
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Usuários') }}
+            {{ __(ucfirst($model->getTable())) }}
         </h2>
     </x-slot>
 
@@ -35,7 +35,7 @@
     {{-- DATATABLES --}}
 
     @php
-        $columns = $model->getColumns('grid');
+        $columns = $model->getSysColumns('grid');
     @endphp
 
     <input type="hidden" id="crud-datatables-columns" value="{{ json_encode($columns) }}" />

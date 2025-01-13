@@ -47,9 +47,9 @@ trait Syscolumn_Mysql_Integration
         $s->form_label = $col->Field;
         $s->grid_label = $col->Field;
         $s->form_on_create = true;
-        $s->form_on_read = true;
-        $s->form_on_update = true;
-        $s->form_on_revise = true;
+        $s->form_on_show = true;
+        $s->form_on_edit = true;
+        $s->form_on_review = true;
         $s->grid = true;
         $s->grid_order = static::nextOrder($table, 'grid_order');
         $s->form_order = static::nextOrder($table, 'grid_order');
@@ -60,12 +60,12 @@ trait Syscolumn_Mysql_Integration
         //-- emp / fil
         if ($col->Field == 'emp' || $col->Field == 'fil') {
             $s->readonly_on_create = 1;
-            $s->readonly_on_update = 1;
-            $s->readonly_on_revise = 1;
+            $s->readonly_on_edit = 1;
+            $s->readonly_on_review = 1;
             $s->form_on_create = 0;
-            $s->form_on_read = 0;
-            $s->form_on_update = 0;
-            $s->form_on_revise = 0;
+            $s->form_on_show = 0;
+            $s->form_on_edit = 0;
+            $s->form_on_review = 0;
             $s->grid = 0;
         }
 
@@ -76,16 +76,16 @@ trait Syscolumn_Mysql_Integration
 
             $s->form_on_create = 0;
             $s->readonly_on_create = 1;
-            $s->readonly_on_update = 1;
-            $s->readonly_on_revise = 1;
+            $s->readonly_on_edit = 1;
+            $s->readonly_on_review = 1;
         }
 
         //created_at / updated_at
         if ($col->Field == 'created_at' || $col->Field == 'updated_at') {
             $s->form_on_create = 0;
             $s->readonly_on_create = 1;
-            $s->readonly_on_update = 1;
-            $s->readonly_on_revise = 1;
+            $s->readonly_on_edit = 1;
+            $s->readonly_on_review = 1;
             $s->form_label = $col->Field == 'created_at' ? 'Criado em' : 'Alterado em';
             $s->grid_label = $col->Field == 'created_at' ? 'Criado em' : 'Alterado em';
             $s->grid = 0;
@@ -94,9 +94,9 @@ trait Syscolumn_Mysql_Integration
         if ($col->Field == 'deleted_at') {
 
             $s->form_on_create = 0;
-            $s->form_on_read = 0;
-            $s->form_on_update = 0;
-            $s->form_on_revise = 0;
+            $s->form_on_show = 0;
+            $s->form_on_edit = 0;
+            $s->form_on_review = 0;
             $s->grid = 0;
 
         }
@@ -145,8 +145,8 @@ trait Syscolumn_Mysql_Integration
         }
 
         $s->required_on_create = $col->Null == 'NO' && is_null($col->Default);
-        $s->required_on_update = $col->Null == 'NO' && is_null($col->Default);
-        $s->required_on_revise = $col->Null == 'NO' && is_null($col->Default);
+        $s->required_on_edit = $col->Null == 'NO' && is_null($col->Default);
+        $s->required_on_review = $col->Null == 'NO' && is_null($col->Default);
 
         // $s->default = $col->Default;
 

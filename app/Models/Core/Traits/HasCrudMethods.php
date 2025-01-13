@@ -9,7 +9,7 @@ use App\Models\Core\Systable;
 trait HasCrudMethods
 {
 
-    public function getColumns($op, $action = '')
+    public function getSysColumns($op, $action = '')
     {
         //-- FAZ IMPORTACAO AUTOMATICA, PENSAR EM ALGO QUE NAO FAÇA TODAS AS VEZES
         Sysdb::importDb($this);
@@ -27,7 +27,7 @@ trait HasCrudMethods
                     $query->where("form_on_{$action}", 1);
                 }
             )->where('table', $this->getTable())
-            ->whereNotIn('name', $this->hidden)
+            //->whereNotIn('name', $this->hidden)
             ->get()->toArray();
 
         if ($op == 'grid') {
@@ -41,16 +41,16 @@ trait HasCrudMethods
                 },
                 $columns
             );
-        } else { 
-            
+        } else {
+
             // form
-            
-            $formattedColumns = array_filter(
-                $columns,
-                function ($column) use ($action) {
-                    return $column["form_on_{$action}"]; // filter by form_on_create, form_on_read, form_on_update, form_on_revise
-                }
-            );
+            $formattedColumns =
+                array_filter(
+                    $columns,
+                    function ($column) use ($action) {
+                        return $column["form_on_{$action}"]; // filter by form_on_create, form_on_show, form_on_edit, form_on_review
+                    }
+                );
         }
 
         return $formattedColumns;

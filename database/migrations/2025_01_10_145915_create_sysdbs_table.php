@@ -53,19 +53,19 @@ return new class extends Migration
             $table->string('table')->nullable(false);
             $table->string('name')->nullable(false);
             $table->string('description')->nullable(); // Descrição opcional
-            $table->char('type',2)->nullable(false);;
+            $table->char('type',2)->nullable(false);
             $table->boolean('required_on_create');
-            $table->boolean('required_on_update');
-            $table->boolean('required_on_revise');
+            $table->boolean('required_on_edit');
+            $table->boolean('required_on_review');
             $table->boolean('grid')->default(true);
             $table->integer('grid_order');
             $table->integer('grid_width')->default(200);
             $table->enum('grid_align',['left','right','center'])->default('left');
             $table->string('grid_label')->nullable();
             $table->boolean('form_on_create')->default(true);
-            $table->boolean('form_on_read')->default(true);
-            $table->boolean('form_on_update')->default(true);
-            $table->boolean('form_on_revise')->default(true);
+            $table->boolean('form_on_show')->default(true);
+            $table->boolean('form_on_edit')->default(true);
+            $table->boolean('form_on_review')->default(true);
             $table->integer('form_order');
             $table->enum('form_align',['left','right','center'])->default('left');
             $table->string('form_label')->nullable();
@@ -73,8 +73,8 @@ return new class extends Migration
             $table->string('sqlcombo')->nullable();
             // $table->bigInteger('id_systablesearch')->nullable();
             $table->boolean('readonly_on_create')->default(false);
-            $table->boolean('readonly_on_update')->default(false);
-            $table->boolean('readonly_on_revise')->default(false);
+            $table->boolean('readonly_on_edit')->default(false);
+            $table->boolean('readonly_on_review')->default(false);
             $table->boolean('filterby');
             $table->boolean('orderby')->default(true);
             $table->boolean('searchby');
