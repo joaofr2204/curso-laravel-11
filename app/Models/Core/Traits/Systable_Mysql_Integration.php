@@ -13,7 +13,7 @@ trait Systable_Mysql_Integration {
     public static function importMysqlTable(BaseModel $model){
 
         if( !Systable::where('name',$model->getTable())
-                     ->where('sysdb_id', Sysdb::ofModel($model)->value('id') )
+                     ->where('db', Sysdb::ofModel($model)->value('name') )
                      ->exists()
         ) {
             static::createSystable($model);
@@ -25,7 +25,7 @@ trait Systable_Mysql_Integration {
         $s = new Systable;
 
         $s->name     = $model->getTable();
-        $s->sysdb_id = Sysdb::ofModel($model)->value('id');
+        $s->db = Sysdb::ofModel($model)->value('name');
 
         //-- intercept the systable creation
         if(method_exists($model,'onCreateSystable')){

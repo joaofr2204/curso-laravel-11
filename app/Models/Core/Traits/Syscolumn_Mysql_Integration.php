@@ -32,18 +32,13 @@ trait Syscolumn_Mysql_Integration
     private static function createSysColumn(BaseModel $model, $col)
     {
 
-        $sysdb_id = Sysdb::ofModel($model)->value('id');
-
         $table = $model->getTable();
-        $systable_id = Systable::where('sysdb_id', $sysdb_id)
-            ->where('name', $table)->get()->first()->id;
 
         $s = new Syscolumn;
 
         //-- I need to modify de line bellow because "table" is an laravel Model's attribute
         $s->attributes['table'] = $table;
         $s->name = $col->Field;
-        $s->systable_id = $systable_id;
         $s->form_label = $col->Field;
         $s->grid_label = $col->Field;
         $s->form_on_create = true;

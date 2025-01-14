@@ -26,6 +26,7 @@ class Sysdb extends BaseModel
 
         $s->type = $model->getConnection()->getName();
         $s->name = $model->getConnection()->getDatabaseName();
+        $s->dbname = $model->getConnection()->getDatabaseName();
 
         $s->save();
     }

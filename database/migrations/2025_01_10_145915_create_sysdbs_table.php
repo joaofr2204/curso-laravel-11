@@ -15,8 +15,9 @@ return new class extends Migration
             $table->char('emp',env('SYS_EMP_SIZE',2))->nullable();
             $table->char('fil',env('SYS_FIL_SIZE',2))->nullable();            
             $table->id();
-            $table->string('name'); // Nome do banco de dados
+            $table->string('name')->unique(); // Nome ou alias da conexao 
             $table->string('type',30);
+            $table->string('dbname'); // Nome do banco de dados
             $table->string('description')->nullable(); // Descrição opcional
             $table->timestamps();
             $table->softDeletes();
@@ -27,7 +28,7 @@ return new class extends Migration
             $table->char('emp',env('SYS_EMP_SIZE',2))->nullable();
             $table->char('fil',env('SYS_FIL_SIZE',2))->nullable();            
             $table->id();
-            $table->foreignId('sysdb_id')->constrained('sysdbs')->onDelete('restrict'); // Relaciona ao banco de dados
+            $table->string('db');
             $table->string('name'); // Nome da tabela
             $table->string('description')->nullable(); // Descrição opcional
             $table->enum('empfil_share',['E','S','M'])->default('E');//EXCLUSIVE-SHARE-MIXED
@@ -42,18 +43,21 @@ return new class extends Migration
             $table->json('formfiles_filter')->nullable(true);
             $table->timestamps();
             $table->softDeletes();
-            $table->unique(['emp','sysdb_id', 'name']); // único por empresa e banco de dados
+            $table->unique(['emp','db', 'name']); // único por empresa e banco de dados
+
+            $table->foreign('db')->references('name')->on('sysdbs')->onDelete('restrict');
+
+            $table->index('name'); // Índice simples na coluna 'name'
         });
 
         Schema::create('syscolumns', function (Blueprint $table) {
             $table->char('emp',env('SYS_EMP_SIZE',2))->nullable();
             $table->char('fil',env('SYS_FIL_SIZE',2))->nullable();
             $table->id();
-            $table->foreignId('systable_id')->constrained('systables')->onDelete('restrict');
-            $table->string('table')->nullable(false);
-            $table->string('name')->nullable(false);
+            $table->string('table');
+            $table->string('name');
             $table->string('description')->nullable(); // Descrição opcional
-            $table->char('type',2)->nullable(false);
+            $table->char('type',2);
             $table->boolean('required_on_create');
             $table->boolean('required_on_edit');
             $table->boolean('required_on_review');
@@ -84,7 +88,9 @@ return new class extends Migration
             $table->string('field_class')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->unique(['emp','systable_id','name']);
+            $table->unique(['emp','table','name']);
+
+            $table->foreign('table')->references('name')->on('systables')->onDelete('restrict');
         });
     }
 
