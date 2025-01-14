@@ -125,8 +125,6 @@ trait Syscolumn_Mysql_Integration
             $options = str_replace(')', '', $options);
             $options = explode(',', $options);
 
-            $combovalues = ['' => ''];
-
             foreach ($options as $o) {
 
                 $o = substr($o, 1, strlen($o) - 2);

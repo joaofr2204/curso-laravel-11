@@ -69,19 +69,33 @@ abstract class CrudController extends Controller
      */
     public function index(Request $request)
     {
-        $this->model->getSysColumns('grid');
+        $cols = $this->model->getSysColumns('grid');
+
         //-- aqui fornece os dados para listagem
         if ($request->ajax()) {
-            $list = $this->model::query();
 
-            return DataTables::of($list)
-                /*
-                ->addColumn('action', function ($user) {
-                    return view('core.crud-actions', compact('user'))->render();
-                },false)
-                ->rawColumns(['action']) // Tornar a coluna 'action' como HTML
-                */
-                ->make(true);
+            $translations = array_reduce($cols, function ($carry, $item) {
+                if (isset($item['options'])) {
+                    $carry[$item['name']] = $item['options'];
+                }
+                return $carry;
+            }, []);
+
+            $list = $this->model::query();
+            $datatables = DataTables::of($list);
+
+            foreach (array_keys($translations) as $key) {
+                $datatables->editColumn($key, function ($row) use ($translations, $key) {
+                    return $translations[$key][$row->$key] ?? $row->$key; // Traduz ou mantém o valor original
+                });
+            }
+            /*
+                       ->addColumn('action', function ($user) {
+                           return view('core.crud-actions', compact('user'))->render();
+                       },false)
+                       ->rawColumns(['action']) // Tornar a coluna 'action' como HTML
+                       */
+            return $datatables->make(true);
         }
 
         $view = view()->exists("{$this->view}.index") ? "{$this->view}.index" : "core.crud.index";

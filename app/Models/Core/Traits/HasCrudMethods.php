@@ -31,26 +31,37 @@ trait HasCrudMethods
             ->get()->toArray();
 
         if ($op == 'grid') {
+            
+            //-- format the way datatables expects
             $formattedColumns = array_map(
                 function ($column) {
-                    return [
+                    $columns = [
                         'data' => $column['name'],
                         'name' => $column['name'],
                         'width' => $column['grid_width']
                     ];
+
+                    if ($column['type'] == 'CV') {
+                        $columns['options'] = Syscolumn::getOptions($column['sqlcombo']);
+                    }
+
+                    return $columns;
                 },
                 $columns
             );
         } else {
 
             // form
-            $formattedColumns =
-                array_filter(
-                    $columns,
-                    function ($column) use ($action) {
-                        return $column["form_on_{$action}"]; // filter by form_on_create, form_on_show, form_on_edit, form_on_review
+            //-- format the way datatables expects
+            $formattedColumns = array_map(
+                function ($column) {
+                    if($column['type'] == 'CV') {
+                        $column['options'] = Syscolumn::getOptions($column['sqlcombo']);
                     }
-                );
+                    return $column;
+                },
+                $columns
+            );
         }
 
         return $formattedColumns;
