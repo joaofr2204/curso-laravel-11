@@ -19,7 +19,6 @@ trait Systable_Mysql_Integration {
             static::createSystable($model);
         }
 
-
     }
 
     private static function createSysTable(BaseModel $model){

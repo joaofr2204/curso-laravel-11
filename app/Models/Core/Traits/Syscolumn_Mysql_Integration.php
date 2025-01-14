@@ -19,7 +19,7 @@ trait Syscolumn_Mysql_Integration
 
         //-- Associativo, com keyBy
         $exists = Syscolumn::where('table', $model->getTable())
-            ->whereIn('name',  array_column($columns, 'Field'))
+            ->whereIn('name', array_column($columns, 'Field'))
             ->get()->keyBy('name')->toArray();
 
         foreach ($columns as $col) {
@@ -35,8 +35,8 @@ trait Syscolumn_Mysql_Integration
         $sysdb_id = Sysdb::ofModel($model)->value('id');
 
         $table = $model->getTable();
-        $systable_id = Systable::where('sysdb_id',$sysdb_id)
-        ->where('name',$table)->get()->first()->id;
+        $systable_id = Systable::where('sysdb_id', $sysdb_id)
+            ->where('name', $table)->get()->first()->id;
 
         $s = new Syscolumn;
 
@@ -75,9 +75,11 @@ trait Syscolumn_Mysql_Integration
             $s->grid_label = 'Id';
 
             $s->form_on_create = 0;
+            $s->form_on_edit = 0;
             $s->readonly_on_create = 1;
             $s->readonly_on_edit = 1;
             $s->readonly_on_review = 1;
+            $s->grid_width = 70;
         }
 
         //created_at / updated_at

@@ -8,6 +8,11 @@ import '/resources/css/core/crud-index.css' // deixa as customizacoes de css por
 import JSZip from 'jszip'; // Para exportação para Excel
 import pdfMake from 'pdfmake/build/pdfmake'; // Para exportação para PDF
 import { route } from 'ziggy-js';
+
+import toastr from 'toastr'; // Importa Toastr
+import 'toastr/build/toastr.min.css'; // Importa o estilo do Toastr
+
+
 // import Swal from 'sweetalert2';
 
 // Tornando as dependências globais
@@ -77,6 +82,11 @@ $(function () {
             });
 
             $('.dt-scroll-headInner .dataTable').width('');
+
+            $('.crud-messages').each(function (i,e) {
+                toastr[$(this).data('type')]($(this).text(), $(this).data('title'));
+            });
+
 
         }
 

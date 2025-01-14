@@ -50,6 +50,8 @@ class User extends BaseModel implements
         if ($column->name == 'remember_token') {
             $column->form_on_create = 0;
             $column->grid = 0;
+        } elseif ($column->name == 'active') {
+            $column->grid_width = 50;
         } elseif ($column->name == 'email_verified_at') {
             $column->form_on_create = 0;
             // $column->grid = 0;
