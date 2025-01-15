@@ -33,29 +33,37 @@ trait HasCrudMethods
         if ($op == 'grid') {
             
             //-- format the way datatables expects
-            $formattedColumns = array_map(
-                function ($column) {
-                    $columns = [
+            $formattedColumns = array_reduce(
+                $columns,
+                function ($carry, $column) {
+                    $col = [
                         'data' => $column['name'],
                         'name' => $column['name'],
-                        'width' => $column['grid_width']
+                        'width' => $column['grid_width'],
                     ];
-
-                    if ($column['type'] == 'CV') {
-                        $columns['options'] = Syscolumn::getOptions($column['sqlcombo']);
+                    
+                    if (in_array($column['type'], ['CI', 'CV', 'ST','CH'])) {
+                        $col['options'] = Syscolumn::getOptions($column['sqlcombo']);
                     }
 
-                    return $columns;
+                    if($column['grid_align']=='center'){
+                        $col['className'] = 'text-center'; // Classe CSS para centralizar'
+                    }
+            
+                    $carry[$column['name']] = $col;
+            
+                    return $carry;
                 },
-                $columns
+                []
             );
+            
         } else {
 
             // form
             //-- format the way datatables expects
             $formattedColumns = array_map(
                 function ($column) {
-                    if($column['type'] == 'CV') {
+                    if(in_array($column['type'], ['CI', 'CV'])) {
                         $column['options'] = Syscolumn::getOptions($column['sqlcombo']);
                     }
                     return $column;

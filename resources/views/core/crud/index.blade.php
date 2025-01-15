@@ -35,7 +35,7 @@
     {{-- DATATABLES --}}
 
     @php
-        $columns = $model->getSysColumns('grid');
+        $columns = array_values($model->getSysColumns('grid'));
     @endphp
 
     <input type="hidden" id="crud-datatables-columns" value="{{ json_encode($columns) }}" />

@@ -47,16 +47,31 @@ class User extends BaseModel implements
 
     public function onCreateSyscolumn(&$column)
     {
-        if ($column->name == 'remember_token') {
-            $column->form_on_create = 0;
-            $column->grid = 0;
-        } elseif ($column->name == 'active') {
-            $column->grid_width = 50;
-        } elseif ($column->name == 'email_verified_at') {
-            $column->form_on_create = 0;
-            // $column->grid = 0;
-        } elseif ($column->name == 'password') {
-            $column->grid = 0;
+        switch ($column->name) {
+            case 'password':
+                $column->type = 'PW';
+                $column->required_on_edit = false;
+                $column->grid = false;
+                break;
+            case 'active':
+                $column->type = 'CH'; // status type
+                $column->sqlcombo = json_encode([
+                    0 => ['red', 'times', 'Inativo'],
+                    1 => ['green', 'check', 'Ativo']
+                ]); // value of field / css color
+                $column->grid_align = 'center';
+                $column->grid_label = '';
+                $column->grid_width = 30;
+                break;
+            case 'remember_token':
+                $column->form_on_create = 0;
+                $column->grid = 0;
+                break;
+            case 'email_verified_at':
+                $column->form_on_create = 0;
+                break;
         }
+
+
     }
 }

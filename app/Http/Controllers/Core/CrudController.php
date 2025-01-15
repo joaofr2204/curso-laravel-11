@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\DataTables;
+use Yajra\DataTables\EloquentDataTable;
 
 abstract class CrudController extends Controller
 {
@@ -74,6 +75,7 @@ abstract class CrudController extends Controller
         //-- aqui fornece os dados para listagem
         if ($request->ajax()) {
 
+            //-- translations for combobox, checkbox and status fields
             $translations = array_reduce($cols, function ($carry, $item) {
                 if (isset($item['options'])) {
                     $carry[$item['name']] = $item['options'];
@@ -81,7 +83,7 @@ abstract class CrudController extends Controller
                 return $carry;
             }, []);
 
-            $list = $this->model::query();
+            $list = $this->model::query()->orderBy('id', 'desc');
             $datatables = DataTables::of($list);
 
             foreach (array_keys($translations) as $key) {
@@ -89,18 +91,19 @@ abstract class CrudController extends Controller
                     return $translations[$key][$row->$key] ?? $row->$key; // Traduz ou mantém o valor original
                 });
             }
-            /*
-                       ->addColumn('action', function ($user) {
-                           return view('core.crud-actions', compact('user'))->render();
-                       },false)
-                       ->rawColumns(['action']) // Tornar a coluna 'action' como HTML
-                       */
+
+            $this->customDatatables($datatables,$cols);
+
             return $datatables->make(true);
         }
 
         $view = view()->exists("{$this->view}.index") ? "{$this->view}.index" : "core.crud.index";
 
         return view($view, ['model' => $this->model]);
+    }
+
+    protected function customDatatables(EloquentDataTable &$datatables,$cols){
+        
     }
 
     public function show($id)

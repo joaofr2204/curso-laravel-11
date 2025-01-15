@@ -14,6 +14,10 @@ class Syscolumn extends BaseModel
 
     public static function getOptions($sql):array
     {
+        if(empty($sql)){
+            return [];
+        }
+
         if (substr($sql, 0, 6) == 'select') {
             return self::sqlToArray($sql);
         } else {

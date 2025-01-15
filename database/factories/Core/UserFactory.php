@@ -24,6 +24,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'active' => $this->faker->boolean,
             'username' =>  $this->faker->unique()->userName,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),

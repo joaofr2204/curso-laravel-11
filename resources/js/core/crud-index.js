@@ -37,7 +37,7 @@ $(function () {
         autoWidth: false,
 
         ajax: $('#crud-datatables-index-route').val(),
-        order: [[0, "asc"]], // Ordena pelo primeiro campo
+        // order: [[0, "asc"]], // Ordena pelo primeiro campo
         buttons: [
             {
                 extend: 'excelHtml5', // Extensão para exportar para Excel
