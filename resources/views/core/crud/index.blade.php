@@ -19,15 +19,18 @@
 
     <div class="my-2 mx-3">
         <button onclick="window.location = '{{ route("{$model->getTable()}.create") }}'" title="Incluir"
-            class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition">
+            class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition"
+            accesskey="I">
             <i class="fas fa-plus"></i>
         </button>
         <button onclick="crudForm('{{$model->getTable()}}','show')" title="Visualizar" id="crud-show-btn"
-            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition">
+            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition"
+            accesskey="V">
             <i class="fas fa-eye"></i>
         </button>
         <button onclick="crudForm('{{$model->getTable()}}','edit')" title="Editar" id="crud-edit-btn"
-            class="bg-yellow-500 hover:bg-yellow-400 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 transition">
+            class="bg-yellow-500 hover:bg-yellow-400 text-white font-semibold py-1 px-3 rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 transition"
+            accesskey="A">
             <i class="fas fa-edit"></i>
         </button>
     </div>
@@ -41,7 +44,7 @@
             <thead class="bg-gray-100 uppercase text-gray-700">
                 <tr>
                     @foreach ($cols as $column)
-                        <th class="border">{{ $column['name'] }}</th>
+                        <th class="border">{{ $column['syscolumn']['grid_label'] }}</th>
                     @endforeach
                 </tr>
             </thead>

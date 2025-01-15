@@ -41,7 +41,9 @@ class Syscolumn extends BaseModel
     public function onCreateSyscolumn(&$column)
     {
         switch ($column->name) {
-
+            case 'name':
+                $column->readonly_on_edit = true;
+                break;
             case 'table':
                 $column->type = 'CV';
                 $column->sqlcombo = 'select name a, name from systables';

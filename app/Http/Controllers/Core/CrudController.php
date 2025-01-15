@@ -205,6 +205,10 @@ abstract class CrudController extends Controller
         foreach ($columns as $column) {
             $name = $column['name'];
 
+            if(!$request->has($name)) {
+                continue;
+            }
+
             if ($column['type'] == 'PW') {
                 $validatedData[$name] = bcrypt($request->input($name));
             } else {

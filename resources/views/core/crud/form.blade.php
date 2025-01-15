@@ -1,3 +1,10 @@
+<style>
+.label-required::after {
+    content: " *"; /* Adiciona um asterisco */
+    color: red;    /* Define a cor vermelha */
+    font-weight: bold; /* Opcional: deixa o asterisco em negrito */
+}    
+</style>
 <form action="{{ route("{$model->getTable()}.$action", $action == 'store' ? null : $model->id) }}" method="POST"
     class="bg-white dark:bg-gray-800 p-6 rounded shadow-md">
 
@@ -22,32 +29,33 @@
                     value="1"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                 <label for="{{$field['name']}}"
-                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $field['name'] }}</label>
+                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ ucfirst($field['form_label']) }}</label>
             </div>
-        @elseif($field['type'] == 'CV') {{-- COMBOBOX VARCHAR --}}
+        @elseif(in_array($field['type'],['CV','CI'])) {{-- COMBOBOX VARCHAR / COMBOBOX INTEGER --}}
             <div class="mb-2">
 
                 <label for="{{$field['name']}}"
-                    class="block text-sm font-medium text-gray-900 dark:text-white">{{ $field['name'] }}</label>
+                    class="block text-sm font-medium text-gray-900 dark:text-white {{$field["required_on_{$action}"] ? 'label-required' : ''}}">{{ ucfirst($field['form_label']) }}</label>
 
                 <select id="{{$field['name']}}" {{ $field["readonly_on_{$action}"] ? 'disabled' : "name={$field['name']}" }} {{ $field["required_on_{$action}"] ? 'required' : '' }}
-                    class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    class="block w-full p-2 text-gray-900 border border-gray-300 rounded-md bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option value=""></option>
                     @foreach($field['options'] as $key => $option)
                         <option value="{{ $key }}" {{ $model->{$field['name']} == $key ? 'selected' : '' }}>{{ $option }}</option>
                     @endforeach
                 </select>
 
-
             </div>
         @else
             <div class="mb-2">
                 <label for="{{$field['name']}}"
-                    class="block text-sm font-medium text-gray-900 dark:text-white">{{ $field['name'] }}</label>
+                    class="block text-sm font-medium text-gray-900 dark:text-white {{$field["required_on_{$action}"] ? 'label-required' : ''}}">{{ ucfirst($field['form_label']) }}</label>
 
                 @php
-                    if ($field['type'] == 'BI') { // BIGINT
+                    if (in_array($field['type'],['BI','IN'])) { // BIGINT, INTEGER
                         $type = 'number';
+                    } else if($field['type']=='PW') { // PASSWORD
+                        $type = 'password';
                     } else {
                         $type = 'text';
                     }
@@ -55,7 +63,7 @@
 
                 <input type="{{ $type }}" id="{{ $field['name'] }}"
                     value="{{ $model->{$field['name']} ?? old($field['name']) }}" {{ $field["readonly_on_{$action}"] ? 'disabled' : "name={$field['name']}" }} {{ $field["required_on_{$action}"] ? 'required' : '' }}
-                    class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                    class="block w-full p-2 text-gray-900 border border-gray-300 rounded-md bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
 
             </div>
         @endif
