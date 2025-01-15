@@ -92,6 +92,14 @@ $(function () {
 
     });
 
+    // Encontrar dinamicamente o índice da coluna `id`
+    const idColumnIndex = table.settings().init().columns.findIndex(column => column.name === 'id');
+
+    // Configurar a ordenação padrão com base no índice da coluna `id`
+    if (idColumnIndex !== -1) {
+        table.order([idColumnIndex, 'desc']).draw();
+    }
+    
     /*
     $(window).on('resize',function(e){
         e.preventDefault();

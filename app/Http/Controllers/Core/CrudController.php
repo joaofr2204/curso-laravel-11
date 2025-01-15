@@ -83,7 +83,7 @@ abstract class CrudController extends Controller
                 return $carry;
             }, []);
 
-            $list = $this->model::query()->orderBy('id', 'desc');
+            $list = $this->model::query();
             $datatables = DataTables::of($list);
 
             foreach (array_keys($translations) as $key) {
@@ -92,18 +92,22 @@ abstract class CrudController extends Controller
                 });
             }
 
-            $this->customDatatables($datatables,$cols);
+            $this->customDatatables($datatables, $cols);
 
             return $datatables->make(true);
         }
 
         $view = view()->exists("{$this->view}.index") ? "{$this->view}.index" : "core.crud.index";
 
-        return view($view, ['model' => $this->model]);
+        return view($view, [
+            'model' => $this->model,
+            'cols' => array_values($cols)
+        ]);
     }
 
-    protected function customDatatables(EloquentDataTable &$datatables,$cols){
-        
+    protected function customDatatables(EloquentDataTable &$datatables, $cols)
+    {
+
     }
 
     public function show($id)
