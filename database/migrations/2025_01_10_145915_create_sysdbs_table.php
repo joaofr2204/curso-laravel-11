@@ -31,12 +31,12 @@ return new class extends Migration
             $table->string('db');
             $table->string('name'); // Nome da tabela
             $table->string('description')->nullable(); // Descrição opcional
-            $table->enum('empfil_share',['E','S','M'])->default('E');//EXCLUSIVE-SHARE-MIXED
+            $table->enum('empfil_share',['E','S','M'])->default('E');//EXCLUSIVE-SHARED-MIXED
             $table->boolean('create')->default(true);
-            $table->boolean('read')->default(true);
-            $table->boolean('update')->default(true);
-            $table->boolean('delete')->default(true);
-            $table->boolean('revise')->default(false);
+            $table->boolean('show')->default(true);
+            $table->boolean('edit')->default(true);
+            $table->boolean('destroy')->default(true);
+            $table->boolean('review')->default(false);
             $table->boolean('clone')->default(false);
             $table->boolean('export')->default(true);
             $table->boolean('files')->default(false);
@@ -75,7 +75,7 @@ return new class extends Migration
             $table->string('form_label')->nullable();
             $table->string('placeholder')->nullable();
             $table->string('sqlcombo')->nullable();
-            // $table->bigInteger('id_systablesearch')->nullable();
+            $table->string('systablesearch')->nullable();
             $table->boolean('readonly_on_create')->default(false);
             $table->boolean('readonly_on_edit')->default(false);
             $table->boolean('readonly_on_review')->default(false);

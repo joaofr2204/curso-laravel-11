@@ -61,7 +61,7 @@ class User extends BaseModel implements
                 ]); // value of field / css color
                 $column->grid_align = 'center';
                 $column->grid_label = '';
-                $column->grid_width = 30;
+                $column->grid_width = 20;
                 break;
             case 'remember_token':
                 $column->form_on_create = 0;

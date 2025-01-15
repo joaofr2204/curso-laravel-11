@@ -2,11 +2,12 @@
 
 .dt-buttons,
 .dt-search,
-.dt-length{
+.dt-length {
     display: inline-block !important;
 }
-.dt-length{
-    float:right !important;
+
+.dt-length {
+    float: right !important;
 }
 
 .dt-container select.dt-input {
@@ -29,15 +30,21 @@
     line-height: 0.8em !important;
 }
 
+.dataTable tbody tr:last-child {
+    /* Define a borda inferior da ultima linha */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
 /* SELECT ROW */
 
-#crud-table tr{
+#crud-table tr {
     cursor: pointer;
 }
 
 table.display.dataTable>tbody>tr.selected>*,
 table.display.dataTable>tbody>tr.odd.selected>*,
-table.dataTable.hover > tbody > tr.selected:hover > *, table.dataTable.display > tbody > tr.selected:hover > *, 
+table.dataTable.hover>tbody>tr.selected:hover>*,
+table.dataTable.display>tbody>tr.selected:hover>*,
 table.display.dataTable>tbody>tr.selected:hover>* {
     box-shadow: inset 0 0 0 9999px #acbad4 !important;
     color: #333 !important;
@@ -46,61 +53,67 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 
 /* RESIZE-COLUMN */
 
-.dt-column-resizer{
-    top:0px;
+.dt-column-resizer {
+    top: 0px;
     right: -6px;
     height: 28px;
-    width:11px;
-    cursor:w-resize;
+    width: 11px;
+    cursor: w-resize;
     float: right;
     position: absolute;
     z-index: 10;
     /* background-color: red; */
 }
-.dt-column-resizer:hover{
-    background-color: rgba(0,100,200,0.1);
+
+.dt-column-resizer:hover {
+    background-color: rgba(0, 100, 200, 0.1);
 }
 
-.dt-column-title{
+.dt-column-title {
     overflow: hidden;
     max-width: 100%;
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
 }
-#crud-table{
+
+#crud-table {
     table-layout: fixed;
-    
+
 }
+
 #crud-table colgroup col,
-.dt-scroll-headInner table colgroup col{
+.dt-scroll-headInner table colgroup col {
     min-width: 15px;
 }
-.dt-scroll-head{
+
+.dt-scroll-head {
     background-color: #f1f1f1;
 }
 
-.dt-scroll-headInner table{
+.dt-scroll-headInner table {
     table-layout: fixed;
     margin: 0 auto !important;
-    width: 100% ;
+    width: 100%;
 
 }
-.dt-scroll-headInner{
+
+.dt-scroll-headInner {
     overflow-y: scroll !important;
     overflow-x: hidden;
     width: 100% !important;
     padding-right: 0px !important;
 }
 
-.dt-scroll-body{
+.dt-scroll-body {
     overflow-y: scroll !important;
 }
-.dt-scroll{
+
+.dt-scroll {
     overflow-x: auto;
 }
 
-#crud-table td{
+#crud-table td {
     text-overflow: ellipsis;
     overflow: hidden;
     text-wrap: nowrap;
@@ -110,45 +123,52 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 
 }
 
-#crud-table thead th{
+#crud-table thead th {
     display: none !important;
 }
 
-table.dataTable thead>tr>th.dt-orderable-asc, 
-table.dataTable thead>tr>th.dt-orderable-desc, 
-table.dataTable thead>tr>th.dt-ordering-asc, 
-table.dataTable thead>tr>th.dt-ordering-desc, 
-table.dataTable thead>tr>td.dt-orderable-asc, 
-table.dataTable thead>tr>td.dt-orderable-desc, 
-table.dataTable thead>tr>td.dt-ordering-asc, 
+table.dataTable thead>tr>th.dt-orderable-asc,
+table.dataTable thead>tr>th.dt-orderable-desc,
+table.dataTable thead>tr>th.dt-ordering-asc,
+table.dataTable thead>tr>th.dt-ordering-desc,
+table.dataTable thead>tr>td.dt-orderable-asc,
+table.dataTable thead>tr>td.dt-orderable-desc,
+table.dataTable thead>tr>td.dt-ordering-asc,
 table.dataTable thead>tr>td.dt-ordering-desc {
     padding-right: 0px !important;
 }
-table.dataTable .dt-column-order{
+
+table.dataTable .dt-column-order {
     right: 4px !important;
 }
 
 /* Estilizar barras de rolagem para navegadores baseados no WebKit (Chrome, Edge, Safari) */
 .dt-scroll-headInner {
-    scrollbar-color: transparent transparent; /* Cor da barra e do fundo */
+    scrollbar-color: transparent transparent;
+    /* Cor da barra e do fundo */
 }
 
 .dt-scroll-headInner::-webkit-scrollbar {
-    width: 10px; /* Largura da barra de rolagem */
-    height: 10px; /* Altura da barra de rolagem horizontal */
+    width: 10px;
+    /* Largura da barra de rolagem */
+    height: 10px;
+    /* Altura da barra de rolagem horizontal */
 }
 
 .dt-scroll-headInner::-webkit-scrollbar-thumb {
-    background-color: transparent; /* Cor do "polegar" (parte que se move) */
-    border-radius: 5px; /* Cantos arredondados */
+    background-color: transparent;
+    /* Cor do "polegar" (parte que se move) */
+    border-radius: 5px;
+    /* Cantos arredondados */
 }
 
 .dt-scroll-headInner::-webkit-scrollbar-track {
-    background-color: transparent; /* Cor do fundo da barra de rolagem */
+    background-color: transparent;
+    /* Cor do fundo da barra de rolagem */
 }
 
 /* NUMERIC MODIFICATION */
 
-table.dataTable th .dt-column-title{
-    margin-right:22px
+table.dataTable th .dt-column-title {
+    margin-right: 22px
 }

@@ -6,7 +6,7 @@
 }    
 </style>
 <form action="{{ route("{$model->getTable()}.$action", $action == 'store' ? null : $model->id) }}" method="POST"
-    class="bg-white dark:bg-gray-800 p-6 rounded shadow-md">
+    class="bg-white dark:bg-gray-800 p-6 rounded shadow-md grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
     @csrf
 
@@ -23,7 +23,7 @@
 
         @if($field['type'] == 'CH') {{-- CHECKBOX --}}
 
-            <div class="flex items-center mb-4">
+            <div class="flex items-center {{ $field['field_class'] }}">
                 <input type="hidden" name="{{ $field['name'] }}" value="0" />
                 <input id="{{ $field['name'] }}" type="checkbox" {{ $model->{$field['name']} ? 'checked' : ''}} {{ $field["readonly_on_{$action}"] ? 'disabled' : "name={$field['name']}" }} title="{{ $field['name'] }}"
                     value="1"
@@ -32,7 +32,7 @@
                     class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ ucfirst($field['form_label']) }}</label>
             </div>
         @elseif(in_array($field['type'],['CV','CI'])) {{-- COMBOBOX VARCHAR / COMBOBOX INTEGER --}}
-            <div class="mb-2">
+            <div class="{{ $field['field_class'] }}">
 
                 <label for="{{$field['name']}}"
                     class="block text-sm font-medium text-gray-900 dark:text-white {{$field["required_on_{$action}"] ? 'label-required' : ''}}">{{ ucfirst($field['form_label']) }}</label>
@@ -47,7 +47,7 @@
 
             </div>
         @else
-            <div class="mb-2">
+            <div>
                 <label for="{{$field['name']}}"
                     class="block text-sm font-medium text-gray-900 dark:text-white {{$field["required_on_{$action}"] ? 'label-required' : ''}}">{{ ucfirst($field['form_label']) }}</label>
 
@@ -80,10 +80,10 @@
 
     @endforeach
 
-    <hr class="my-4">
+    <hr class="my-4 sm:col-span-2 lg:col-span-3">
 
     <button type="submit"
-        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        class="sm:col-span-2 lg:col-span-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
         Enviar
     </button>
 

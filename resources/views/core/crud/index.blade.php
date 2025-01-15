@@ -41,7 +41,7 @@
 
     <div class="border border-gray-200 bg-white dark:bg-gray-600 w-full px-3 py-3 min-w-[400px]">
         <table id="crud-table" class="display cell-border compact text-sm" style="width:100%">
-            <thead class="bg-gray-100 uppercase text-gray-700">
+            <thead class="bg-gray-100 capitalize text-gray-700">
                 <tr>
                     @foreach ($cols as $column)
                         <th class="border">{{ $column['syscolumn']['grid_label'] }}</th>
