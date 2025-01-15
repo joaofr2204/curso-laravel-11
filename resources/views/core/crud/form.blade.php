@@ -12,7 +12,7 @@
         $action = $action == 'update' ? 'edit' : $action;
     @endphp
 
-    @foreach ($model->getSysColumns('form', $action) as $field)
+    @foreach ($model->getFormColumns($action) as $field)
 
         @if($field['type'] == 'CH') {{-- CHECKBOX --}}
 

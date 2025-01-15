@@ -20,15 +20,4 @@ class UserController extends CrudController
         parent::destroy($id);
     }
 
-    protected function customDatatables(\Yajra\DataTables\EloquentDataTable &$datatables,$cols)
-    {
-        $datatables->editColumn('active', function ($user)use($cols) {
-
-            $status = $cols['active']['options'][$user->active];
-           return "<i class=\"fas fa-{$status[1]}\" style=\"color:{$status[0]}\" title=\"{$status[2]}\"></i>";
-        })->rawColumns(['active']); // Necessário para renderizar o HTML
-        
-    }
-
-
 }

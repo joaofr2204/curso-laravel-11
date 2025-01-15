@@ -70,29 +70,44 @@ abstract class CrudController extends Controller
      */
     public function index(Request $request)
     {
-        $cols = $this->model->getSysColumns('grid');
+        $cols = $this->model->getGridColumns();
 
         //-- aqui fornece os dados para listagem
         if ($request->ajax()) {
 
-            //-- translations for combobox, checkbox and status fields
-            $translations = array_reduce($cols, function ($carry, $item) {
-                if (isset($item['options'])) {
-                    $carry[$item['name']] = $item['options'];
-                }
-                return $carry;
-            }, []);
-
             $list = $this->model::query();
             $datatables = DataTables::of($list);
 
-            foreach (array_keys($translations) as $key) {
-                $datatables->editColumn($key, function ($row) use ($translations, $key) {
-                    return $translations[$key][$row->$key] ?? $row->$key; // Traduz ou mantém o valor original
-                });
+            foreach ($cols as $col) {
+
+                //-- COMBOBOX render
+                if (in_array($col['syscolumn']['type'], ['CI', 'CV']) && isset($col['syscolumn']['options'])) {
+                    $datatables->editColumn($col['name'], function ($row) use ($col) {
+                        $colname = $col['name'];
+                        // return $row->$colname; // Traduz ou mantém o valor original
+                        return $col['syscolumn']['options'][$row->$colname] ?? $row->$colname; // Traduz ou mantém o valor original
+                    });
+
+                    //-- CHECKBOX render
+                } else if (in_array($col['syscolumn']['type'], ['CH'])) {
+
+                    $datatables->editColumn($col['name'], function ($row) use ($col) {
+                        //-- for checkboxes, the sqlcombo options must have 3 positions each one.
+                        //-- 0 = color, 1 = font awesome icon, 2 = title
+                        $col_name = $col['name'];
+                        if (isset($col['syscolumn']['options']) && !empty($col['syscolumn']['options'])) {
+                            $status = $col['syscolumn']['options'][$row->$col_name];
+                            return "<i class=\"fas fa-{$status[1]}\" style=\"color:{$status[0]}\" title=\"{$status[2]}\"></i>";
+                        } else {
+                            return $row->$col_name ? 'Sim' : 'Não';
+                        }
+                    })->rawColumns([$col['name']]); // Necessário para renderizar o HTML
+
+                }
+
             }
 
-            $this->customDatatables($datatables, $cols);
+            $this->modifyColumns($datatables, $cols);
 
             return $datatables->make(true);
         }
@@ -105,7 +120,7 @@ abstract class CrudController extends Controller
         ]);
     }
 
-    protected function customDatatables(EloquentDataTable &$datatables, $cols)
+    protected function modifyColumns(EloquentDataTable &$datatables, $cols)
     {
 
     }
@@ -125,7 +140,7 @@ abstract class CrudController extends Controller
     {
         $view = view()->exists("{$this->view}.create") ? "{$this->view}.create" : "core.crud.create";
 
-        // dd($this->model->getSysColumns('form', 'create'));
+        // dd($this->model->getFormColumns('create'));
 
         return view($view, ['model' => $this->model]);
     }
@@ -148,7 +163,7 @@ abstract class CrudController extends Controller
             return redirect()->route("{$this->model->getTable()}.index")->with('warning', 'Registro não encontrado');
         }
 
-        // dd($this->model->getSysColumns('form','create'));
+        // dd($this->model->getFormColumns('create'));
 
         $view = view()->exists("{$this->view}.edit") ? "{$this->view}.edit" : "core.crud.edit";
 
@@ -184,7 +199,7 @@ abstract class CrudController extends Controller
     protected function receiveRequest(Request $request): array
     {
         $action = $request->method() == 'PUT' ? 'edit' : 'create';
-        $columns = $this->model->getSysColumns('form', $action);
+        $columns = $this->model->getFormColumns($action);
 
         $validatedData = [];
         foreach ($columns as $column) {
@@ -192,11 +207,6 @@ abstract class CrudController extends Controller
 
             if ($column['type'] == 'PW') {
                 $validatedData[$name] = bcrypt($request->input($name));
-
-                //-- check if is a checkbox
-                //}elseif ($column['type'] == 'CH') {
-                //  $validatedData[$name] = $request->input($name) == 'on' ? 1 : 0;
-
             } else {
                 $validatedData[$name] = $request->input($name);
             }
