@@ -12,6 +12,7 @@
     </x-slot>
 
     <input id="crud-datatables-index-route" type="hidden" value="{{ route("{$model->getTable()}.index") }}" />
+    <input id="crud-datatables-order" type="hidden" value="{{ json_encode($order) }}" />
 
     <x-alert />
 

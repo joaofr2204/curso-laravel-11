@@ -12,9 +12,6 @@ import { route } from 'ziggy-js';
 import toastr from 'toastr'; // Importa Toastr
 import 'toastr/build/toastr.min.css'; // Importa o estilo do Toastr
 
-
-// import Swal from 'sweetalert2';
-
 // Tornando as dependências globais
 window.JSZip = JSZip;
 window.pdfMake = pdfMake;
@@ -22,22 +19,27 @@ window.pdfMake = pdfMake;
 //-- crud datatables initaialization
 $(function () {
 
+    // Restaurar o valor de linhas por página
+    const savedPageLength = localStorage.getItem('pageLength');
+
     var table = $('#crud-table').DataTable({
         dom: 'Bflrtip', // Adiciona os botões de exportação
-        pageLength: 100, // Define a quantidade de registros por página
+        pageLength: savedPageLength ?? 100, // Define a quantidade de registros por página
         lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
         scrollY: 'calc(100vh - 303px)', // Define a altura para o grid ficar full screen
         scrollCollapse: false, // Permite que a tabela encolha quando houver menos dados
         select: true,
         processing: true,
         serverSide: true,
-        
+        stateSave: true, // guarda a paginação
         // fixedHeader: true,
         // responsive: true,
         autoWidth: false,
 
-        ajax: $('#crud-datatables-index-route').val(),
-        // order: [[0, "asc"]], // Ordena pelo primeiro campo
+        ajax: {
+            url: $('#crud-datatables-index-route').val(),
+        },
+        order: JSON.parse($('#crud-datatables-order').val()), // by pass - order by id default on backend
         buttons: [
             {
                 extend: 'excelHtml5', // Extensão para exportar para Excel
@@ -83,10 +85,9 @@ $(function () {
 
             $('.dt-scroll-headInner .dataTable').width('');
 
-            $('.crud-messages').each(function (i,e) {
+            $('.crud-messages').each(function (i, e) {
                 toastr[$(this).data('type')]($(this).text(), $(this).data('title'));
             });
-
 
         }
 
@@ -95,11 +96,12 @@ $(function () {
     // Encontrar dinamicamente o índice da coluna `id`
     const idColumnIndex = table.settings().init().columns.findIndex(column => column.name === 'id');
 
-    // Configurar a ordenação padrão com base no índice da coluna `id`
-    if (idColumnIndex !== -1) {
-        table.order([idColumnIndex, 'desc']).draw();
+    // Verificar se a coluna de ID foi encontrada
+    if (idColumnIndex === -1) {
+        console.error('Coluna com o atributo "id" não encontrada.');
+        return;
     }
-    
+
     /*
     $(window).on('resize',function(e){
         e.preventDefault();
@@ -128,12 +130,12 @@ $(function () {
             const columnIndex = $(this).parent('th').index(); // Índice da coluna
 
             newWidth = startWidth = tab_head.find('colgroup').find('col').eq(columnIndex).width();
-            
+
             // Ao arrastar o mouse, redimensiona a coluna
             $(document).on('mousemove', function (e) {
                 const diff = e.pageX - startX; // Diferença do movimento
                 newWidth = Math.round(startWidth + diff, 0);
-                
+
                 // console.log('pX: '+e.pageX+' sW: '+startWidth+ ' diff: '+diff+' nW: '+newWidth);
 
                 // Redimensiona o cabeçalho
@@ -151,7 +153,7 @@ $(function () {
                 $('#crud-table tbody tr').each(function () {
                     $(this).closest('table').find('colgroup').find('col').eq(columnIndex).css('width', newWidth + 'px');
                 });
-                $('#crud-table').css('width',`${tab_head.width()}px`);
+                $('#crud-table').css('width', `${tab_head.width()}px`);
 
                 //-- FAZ O AJUSTE FINO FINAL
                 setTimeout(function () {
@@ -166,6 +168,32 @@ $(function () {
     // Iniciar a funcionalidade de redimensionamento
     resizeColumns();
 
+    //-- PAGINATE - PAGE LENGTH COLTROL
+
+
+
+    // Evento de mudança no seletor de quantidade de linhas
+    $('select[name="crud-table_length"]').on('change', function () {
+        const newPageLength = $(this).val();
+        localStorage.setItem('pageLength', newPageLength);
+    });
+
+    // Restaurar a página salva após a inicialização da tabela
+    // table.on('draw', function () {
+    //     const savedPage = localStorage.getItem('currentPage');
+    //     if (savedPage) {
+    //         table.page(parseInt(savedPage, 10)).draw(false); // Redefine a página
+    //     }
+    // });
+
+    // Evento de mudança de página
+    table.on('page', function () {
+        const currentPage = table.page();
+        localStorage.setItem('currentPage', currentPage);
+        console.log('armazenou pagina ' + currentPage);
+
+    });
+
     //-- SELECT LINE CONTROL
 
     window.selectedRow = null;
@@ -178,21 +206,55 @@ $(function () {
         }
     });
 
-    table.on('draw', function() {
-        // Desmarcar qualquer seleção anterior
-        table.rows().deselect();
+    table.on('draw', function () {
 
-        // Selecionar a primeira linha
-        table.row(0).select();
+        // Carregar a seleção salva
+        const savedRowId = localStorage.getItem('selectedRowId');
+        if (savedRowId) {
+            table.rows().every(function () {
+                const data = this.data();
+                if (String(data.id) === savedRowId) { // Compara pelo ID da linha
+                    this.select(); // Seleciona a linha correspondente
+                }
+            });
+        }
 
-        //$('.dt-scroll-headInner .dataTable').width('');
+        if (table.rows({ selected: true }).count() == 0) {
+            // Selecionar a primeira linha
+            table.row(0).select();
+        }
+
+        //-- MOVE O SCROLL DO DATATABLES PARA MOSTRAR O REGISTRO SELECIONADO !!!! EXCELENT
+
+        const rowOffset = $('#crud-table tr.selected').offset().top; // Posição da linha no documento
+        const tableOffset = $('#crud-table').offset().top; // Posição da tabela
+
+        // Calcula a rolagem necessária para levar a linha ao topo da tela
+        const offset = rowOffset - tableOffset;
+
+        // Faz a rolagem da tabela para o topo da linha selecionada
+        $('#crud-table').parent().scrollTop(offset);
 
     });
-       
+
+    // Evento de seleção
+    table.on('select', function (e, dt, type, indexes) {
+        if (type === 'row') {
+            const rowData = table.row(indexes).data(); // Dados da linha selecionada
+            localStorage.setItem('selectedRowId', rowData.id); // Salva o ID da linha no localStorage
+        }
+    });
+
+    // Evento de deseleção
+    table.on('deselect', function (e, dt, type, indexes) {
+        if (type === 'row') {
+            localStorage.removeItem('selectedRowId'); // Remove o estado do localStorage
+        }
+    });
 
 });
 
-window.crudForm = function (model,action) {
+window.crudForm = function (model, action) {
     if (window.selectedRow) {
         window.location.href = route(model + '.' + action, window.selectedRow.id);
     }

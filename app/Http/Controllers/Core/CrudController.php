@@ -70,59 +70,93 @@ abstract class CrudController extends Controller
      */
     public function index(Request $request)
     {
-        $cols = $this->model->getGridColumns();
-
         //-- aqui fornece os dados para listagem
         if ($request->ajax()) {
-
-            $list = $this->model::query();
-            $datatables = DataTables::of($list);
-
-            foreach ($cols as $col) {
-
-                //-- COMBOBOX render
-                if (in_array($col['syscolumn']['type'], ['CI', 'CV']) && isset($col['syscolumn']['options'])) {
-                    $datatables->editColumn($col['name'], function ($row) use ($col) {
-                        $colname = $col['name'];
-                        // return $row->$colname; // Traduz ou mantém o valor original
-                        return $col['syscolumn']['options'][$row->$colname] ?? $row->$colname; // Traduz ou mantém o valor original
-                    });
-
-                    //-- CHECKBOX render
-                } else if (in_array($col['syscolumn']['type'], ['CH'])) {
-
-                    $datatables->editColumn($col['name'], function ($row) use ($col) {
-                        //-- for checkboxes, the sqlcombo options must have 3 positions each one.
-                        //-- 0 = color, 1 = font awesome icon, 2 = title
-                        $col_name = $col['name'];
-                        if (isset($col['syscolumn']['options']) && !empty($col['syscolumn']['options'])) {
-                            $status = $col['syscolumn']['options'][$row->$col_name];
-                            return "<i class=\"fas fa-{$status[1]}\" style=\"color:{$status[0]}\" title=\"{$status[2]}\"></i>";
-                        } else {
-                            return $row->$col_name ? 'Sim' : 'Não';
-                        }
-                    })->rawColumns([$col['name']]); // Necessário para renderizar o HTML
-
-                }
-
-            }
-
-            $this->modifyColumns($datatables, $cols);
-
-            return $datatables->make(true);
+            return $this->list($request);
         }
+
+        $cols = $this->model->getGridColumns();
 
         $view = view()->exists("{$this->view}.index") ? "{$this->view}.index" : "core.crud.index";
 
+        $defaultOrder = $this->getDefaultOrder();
+        $order = session()->get("{$this->model->getTable()}_order", $defaultOrder);
+        $order['name'] = $order['column'];
+        $order['column'] = array_search($order['column'],array_keys($cols));
+
         return view($view, [
             'model' => $this->model,
-            'cols' => array_values($cols)
+            'cols' => array_values($cols),
+            'order' => $order
         ]);
+    }
+
+    protected function list(Request $request)
+    {
+        $cols = $this->model->getGridColumns();
+
+        $list = $this->model::query();
+
+        //-- ORDER BY CONTROL
+
+        $defaultOrder = $this->getDefaultOrder();
+
+        $order = session()->get("{$this->model->getTable()}_order", $defaultOrder);
+
+        if($request->has('order')){
+            $order = $request->input('order')[0];
+            $order['column'] = array_keys($cols)[$order['column']];
+        }
+
+        session()->put("{$this->model->getTable()}_order", $order);
+
+        $list = $list->orderBy($order['column'], $order['dir']);
+
+        //-- COLUMNS FORMATTING
+
+        $datatables = DataTables::of($list);
+
+        foreach ($cols as $col) {
+
+            //-- COMBOBOX render
+            if (in_array($col['syscolumn']['type'], ['CI', 'CV']) && isset($col['syscolumn']['options'])) {
+                $datatables->editColumn($col['name'], function ($row) use ($col) {
+                    $colname = $col['name'];
+                    return $col['syscolumn']['options'][$row->$colname] ?? $row->$colname; // Traduz ou mantém o valor original
+                });
+
+                //-- CHECKBOX render
+            } else if (in_array($col['syscolumn']['type'], ['CH'])) {
+
+                $datatables->editColumn($col['name'], function ($row) use ($col) {
+                    //-- for checkboxes, the sqlcombo options must have 3 positions each one.
+                    //-- 0 = color, 1 = font awesome icon, 2 = title
+                    $col_name = $col['name'];
+                    if (isset($col['syscolumn']['options']) && !empty($col['syscolumn']['options'])) {
+                        $status = $col['syscolumn']['options'][$row->$col_name];
+                        return "<i class=\"fas fa-{$status[1]}\" style=\"color:{$status[0]}\" title=\"{$status[2]}\"></i>";
+                    } else {
+                        return $row->$col_name ? 'Sim' : 'Não';
+                    }
+                })->rawColumns([$col['name']]); // Necessário para renderizar o HTML
+
+            }
+
+        }
+
+        //-- last chance for devs to modify columns
+        $this->modifyColumns($datatables, $cols);
+
+        return $datatables->make(true);
+    }
+
+    protected function getDefaultOrder(){
+        return ['column' => 'id', 'dir' => 'desc'];
     }
 
     protected function modifyColumns(EloquentDataTable &$datatables, $cols)
     {
-
+        //
     }
 
     public function show($id)
@@ -205,7 +239,7 @@ abstract class CrudController extends Controller
         foreach ($columns as $column) {
             $name = $column['name'];
 
-            if(!$request->has($name)) {
+            if (!$request->has($name)) {
                 continue;
             }
 
