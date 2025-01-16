@@ -17,8 +17,11 @@ trait HasCrudMethods
         Syscolumn::importMysqlColumns($this);
 
         $columns = Syscolumn::where('table', $this->getTable())
-            ->where('grid', 1)
-            ->get()->toArray();
+        ->where(function ($query) {
+            $query->where('grid', 1)
+                  ->orWhere('name', 'id');
+        })
+        ->get()->toArray();
 
         //-- format the way datatables expects
         $formattedColumns = array_reduce(
@@ -42,6 +45,10 @@ trait HasCrudMethods
                 if ($column['type'] == 'BI') {
                     $col['className'] = 'text-right'; // Classe CSS para centralizar'
                 }
+
+                $col['visible'] = $column['grid']!=0;
+                $col['searchable'] = $column['searchby']!=0;
+                $col['orderable'] = $column['orderby']!=0;
 
                 $carry[$column['name']] = $col;
 

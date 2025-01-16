@@ -20,9 +20,10 @@ window.pdfMake = pdfMake;
 $(function () {
 
     // Restaurar o valor de linhas por página
-    const savedPageLength = localStorage.getItem('pageLength');
+    const tableName = $('#crud-tablename').val();
+    const savedPageLength = localStorage.getItem(tableName+'_pageLength');
 
-    var table = $('#crud-table').DataTable({
+    var table = $('#'+tableName+'-table').DataTable({
         dom: 'Bflrtip', // Adiciona os botões de exportação
         pageLength: savedPageLength ?? 100, // Define a quantidade de registros por página
         lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
@@ -31,7 +32,20 @@ $(function () {
         select: true,
         processing: true,
         serverSide: true,
-        stateSave: true, // guarda a paginação
+
+        stateSave: true,
+        stateSaveCallback: function (settings, data) {
+            localStorage.setItem(settings.sInstance+'_state', JSON.stringify(data));
+        },
+        stateLoadCallback: function (settings) {
+            let state = JSON.parse(localStorage.getItem(settings.sInstance+'_state'));
+            if(!state){
+                state = new Object;
+            }
+            state.columns = JSON.parse($('#crud-datatables-columns').val());
+            return state;
+        },
+
         // fixedHeader: true,
         // responsive: true,
         autoWidth: false,
@@ -70,7 +84,7 @@ $(function () {
             $(this).closest('.dt-container').find('.dt-info').addClass('hidden sm:inline-block text-sm justify-self-start float-left mt-4 mb-0');
 
             // Prevenir a ordenação enquanto redimensiona
-            $('#crud-table').closest('.dt-scroll').find('.dt-scroll-headInner>table th').on('click', function (e) {
+            $('#'+tableName+'-table').closest('.dt-scroll').find('.dt-scroll-headInner>table th').on('click', function (e) {
                 if (isResizing) {
                     e.stopPropagation();// Impede a ordenação se estiver redimensionando
                 }
@@ -92,6 +106,8 @@ $(function () {
         }
 
     });
+
+    // table.state.clear();
 
     // Encontrar dinamicamente o índice da coluna `id`
     const idColumnIndex = table.settings().init().columns.findIndex(column => column.name === 'id');
@@ -117,7 +133,7 @@ $(function () {
     // Função para redimensionar as colunas
     const resizeColumns = () => {
 
-        let tab_head = $('#crud-table').closest('.dt-scroll').find('.dt-scroll-headInner>table');
+        let tab_head = $('#'+tableName+'-table').closest('.dt-scroll').find('.dt-scroll-headInner>table');
 
         tab_head.find('th').append(
             $('<span>').addClass('dt-column-resizer')
@@ -150,10 +166,10 @@ $(function () {
                 $(document).off('mouseup');
 
                 // Redimensiona o corpo da tabela
-                $('#crud-table tbody tr').each(function () {
+                $('#'+tableName+'-table tbody tr').each(function () {
                     $(this).closest('table').find('colgroup').find('col').eq(columnIndex).css('width', newWidth + 'px');
                 });
-                $('#crud-table').css('width', `${tab_head.width()}px`);
+                $('#'+tableName+'-table').css('width', `${tab_head.width()}px`);
 
                 //-- FAZ O AJUSTE FINO FINAL
                 setTimeout(function () {
@@ -170,29 +186,21 @@ $(function () {
 
     //-- PAGINATE - PAGE LENGTH COLTROL
 
-
-
     // Evento de mudança no seletor de quantidade de linhas
-    $('select[name="crud-table_length"]').on('change', function () {
+    $('select[name="'+tableName+'-table_length"]').on('change', function () {
         const newPageLength = $(this).val();
-        localStorage.setItem('pageLength', newPageLength);
+        localStorage.setItem(tableName+'_pageLength', newPageLength);
     });
 
-    // Restaurar a página salva após a inicialização da tabela
-    // table.on('draw', function () {
-    //     const savedPage = localStorage.getItem('currentPage');
-    //     if (savedPage) {
-    //         table.page(parseInt(savedPage, 10)).draw(false); // Redefine a página
-    //     }
-    // });
-
     // Evento de mudança de página
+    /*
     table.on('page', function () {
         const currentPage = table.page();
         localStorage.setItem('currentPage', currentPage);
-        console.log('armazenou pagina ' + currentPage);
+        // console.log('armazenou pagina ' + currentPage);
 
     });
+    */
 
     //-- SELECT LINE CONTROL
 
@@ -202,14 +210,16 @@ $(function () {
     table.on('select.dt', function (e, dt, type, indexes) {
         if (type === 'row') {
             // Obtém os dados da linha selecionada
-            window.selectedRow = table.row(indexes).data();
-        }
+            const rowData = table.row(indexes).data(); // Dados da linha selecionada
+            window.selectedRow = rowData;
+            localStorage.setItem(tableName+'_selectedRowId', rowData.id); // Salva o ID da linha no localStorage
+        }        
     });
 
     table.on('draw', function () {
 
         // Carregar a seleção salva
-        const savedRowId = localStorage.getItem('selectedRowId');
+        const savedRowId = localStorage.getItem(tableName+'_selectedRowId');
         if (savedRowId) {
             table.rows().every(function () {
                 const data = this.data();
@@ -226,30 +236,15 @@ $(function () {
 
         //-- MOVE O SCROLL DO DATATABLES PARA MOSTRAR O REGISTRO SELECIONADO !!!! EXCELENT
 
-        const rowOffset = $('#crud-table tr.selected').offset().top; // Posição da linha no documento
-        const tableOffset = $('#crud-table').offset().top; // Posição da tabela
+        const rowOffset = $('#'+tableName+'-table tr.selected').offset().top; // Posição da linha no documento
+        const tableOffset = $('#'+tableName+'-table').offset().top; // Posição da tabela
 
         // Calcula a rolagem necessária para levar a linha ao topo da tela
         const offset = rowOffset - tableOffset;
 
         // Faz a rolagem da tabela para o topo da linha selecionada
-        $('#crud-table').parent().scrollTop(offset);
+        $('#'+tableName+'-table').parent().scrollTop(offset);
 
-    });
-
-    // Evento de seleção
-    table.on('select', function (e, dt, type, indexes) {
-        if (type === 'row') {
-            const rowData = table.row(indexes).data(); // Dados da linha selecionada
-            localStorage.setItem('selectedRowId', rowData.id); // Salva o ID da linha no localStorage
-        }
-    });
-
-    // Evento de deseleção
-    table.on('deselect', function (e, dt, type, indexes) {
-        if (type === 'row') {
-            localStorage.removeItem('selectedRowId'); // Remove o estado do localStorage
-        }
     });
 
 });

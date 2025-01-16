@@ -37,7 +37,7 @@
 
 /* SELECT ROW */
 
-#crud-table tr {
+.dataTable tr {
     cursor: pointer;
 }
 
@@ -77,12 +77,12 @@ table.display.dataTable>tbody>tr.selected:hover>* {
     display: block;
 }
 
-#crud-table {
+.dataTable {
     table-layout: fixed;
 
 }
 
-#crud-table colgroup col,
+.dataTable colgroup col,
 .dt-scroll-headInner table colgroup col {
     min-width: 15px;
 }
@@ -113,7 +113,7 @@ table.display.dataTable>tbody>tr.selected:hover>* {
     overflow-x: auto;
 }
 
-#crud-table td {
+.dataTable td {
     text-overflow: ellipsis;
     overflow: hidden;
     text-wrap: nowrap;
@@ -121,10 +121,6 @@ table.display.dataTable>tbody>tr.selected:hover>* {
     min-width: 15px;
     background: white;
 
-}
-
-#crud-table thead th {
-    display: none !important;
 }
 
 table.dataTable thead>tr>th.dt-orderable-asc,

@@ -11,6 +11,7 @@
         </h2>
     </x-slot>
 
+    <input id="crud-tablename" type="hidden" value="{{ $model->getTable() }}" />
     <input id="crud-datatables-index-route" type="hidden" value="{{ route("{$model->getTable()}.index") }}" />
     <input id="crud-datatables-order" type="hidden" value="{{ json_encode($order) }}" />
 
@@ -41,7 +42,7 @@
     <input type="hidden" id="crud-datatables-columns" value="{{ json_encode($cols) }}" />
 
     <div class="border border-gray-200 bg-white dark:bg-gray-600 w-full px-3 py-3 min-w-[400px]">
-        <table id="crud-table" class="display cell-border compact text-sm" style="width:100%">
+            <table id="{{ $model->getTable() }}-table" class="display cell-border compact text-sm" style="width:100%">
             <thead class="bg-gray-100 capitalize text-gray-700">
                 <tr>
                     @foreach ($cols as $column)
