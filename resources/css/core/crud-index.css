@@ -77,9 +77,9 @@ table.display.dataTable>tbody>tr.selected:hover>* {
     display: block;
 }
 
-.dataTable {
+table.dataTable {
     table-layout: fixed;
-
+    width: fit-content !important;
 }
 
 .dataTable colgroup col,
@@ -93,16 +93,14 @@ table.display.dataTable>tbody>tr.selected:hover>* {
 
 .dt-scroll-headInner table {
     table-layout: fixed;
-    margin: 0 auto !important;
-    width: 100%;
-
+    width: inherit !important;
+    margin: auto !important;
 }
 
 .dt-scroll-headInner {
+    min-width: 100% !important;
     overflow-y: scroll !important;
     overflow-x: hidden;
-    width: 100% !important;
-    padding-right: 0px !important;
 }
 
 .dt-scroll-body {
@@ -122,6 +120,7 @@ table.display.dataTable>tbody>tr.selected:hover>* {
     background: white;
 
 }
+
 
 table.dataTable thead>tr>th.dt-orderable-asc,
 table.dataTable thead>tr>th.dt-orderable-desc,

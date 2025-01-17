@@ -21,9 +21,21 @@ $(function () {
 
     // Restaurar o valor de linhas por página
     const tableName = $('#crud-tablename').val();
-    const savedPageLength = localStorage.getItem(tableName+'_pageLength');
+    const savedPageLength = localStorage.getItem(tableName + '_pageLength');
 
-    var table = $('#'+tableName+'-table').DataTable({
+    let columns = JSON.parse($('#crud-datatables-columns').val());
+
+    $(columns).filter(function (i, e) {
+        return (e.visible ?? true) !== false;
+    }).each(function (i, e) {
+        let stored_width = localStorage.getItem(tableName + '_headersize_' + i);
+        if (stored_width) {
+            console.log('largadb ' + i + ' ' + e.name + ': ' + stored_width);
+            e.width = parseInt(stored_width);
+        }
+    })
+
+    var table = $('#' + tableName + '-table').DataTable({
         dom: 'Bflrtip', // Adiciona os botões de exportação
         pageLength: savedPageLength ?? 100, // Define a quantidade de registros por página
         lengthMenu: [100, 200, 500], // Opções para o usuário selecionar o número de registros a exibir
@@ -35,14 +47,15 @@ $(function () {
 
         stateSave: true,
         stateSaveCallback: function (settings, data) {
-            localStorage.setItem(settings.sInstance+'_state', JSON.stringify(data));
+            localStorage.setItem(settings.sInstance + '_state', JSON.stringify(data));
         },
         stateLoadCallback: function (settings) {
-            let state = JSON.parse(localStorage.getItem(settings.sInstance+'_state'));
-            if(!state){
+            let state = JSON.parse(localStorage.getItem(settings.sInstance + '_state'));
+            if (!state) {
                 state = new Object;
             }
             state.columns = JSON.parse($('#crud-datatables-columns').val());
+
             return state;
         },
 
@@ -62,7 +75,8 @@ $(function () {
                 className: 'dt-button text-sm px-3 py-2 bg-green-500 text-white rounded-sm hover:bg-green-600 mr-2'
             }
         ],
-        columns: JSON.parse($('#crud-datatables-columns').val()),
+        columns: columns,
+
         pagingType: "simple_numbers",  // Use "simple" para uma paginação mais compacta
         language: {
             "paginate": {
@@ -84,17 +98,15 @@ $(function () {
             $(this).closest('.dt-container').find('.dt-info').addClass('hidden sm:inline-block text-sm justify-self-start float-left mt-4 mb-0');
 
             // Prevenir a ordenação enquanto redimensiona
-            $('#'+tableName+'-table').closest('.dt-scroll').find('.dt-scroll-headInner>table th').on('click', function (e) {
+            $('#' + tableName + '-table').closest('.dt-scroll').find('.dt-scroll-headInner>table th').on('click', function (e) {
+                // debugger;
                 if (isResizing) {
                     e.stopPropagation();// Impede a ordenação se estiver redimensionando
                 }
-            });
-
-            // scroll-x
-            $('.dt-scroll-body').on('scroll', function () {
-                // Sincroniza o scroll horizontal do cabeçalho com o corpo
-                const scrollLeft = $(this).scrollLeft();
-                $('.dt-scroll-headInner').scrollLeft(scrollLeft);
+            }).on('dblclick',function(e){
+                if (isResizing) {
+                    e.stopPropagation();// Impede a ordenação se estiver redimensionando
+                }
             });
 
             $('.dt-scroll-headInner .dataTable').width('');
@@ -133,12 +145,13 @@ $(function () {
     // Função para redimensionar as colunas
     const resizeColumns = () => {
 
-        let tab_head = $('#'+tableName+'-table').closest('.dt-scroll').find('.dt-scroll-headInner>table');
+        let tab_head = $('#' + tableName + '-table').closest('.dt-scroll').find('.dt-scroll-headInner>table');
 
         tab_head.find('th').append(
             $('<span>').addClass('dt-column-resizer')
         ).find('.dt-column-resizer').on('mousedown', function (e) {
 
+            e.stopPropagation();// Impede a ordenação se estiver redimensionando
             isResizing = true; // Inicia o redimensionamento
             startX = e.pageX;
             let startTableWidth = tab_head.width();
@@ -157,6 +170,7 @@ $(function () {
                 // Redimensiona o cabeçalho
                 tab_head.find('colgroup').find('col').eq(columnIndex).css('width', `${newWidth}px`);
                 tab_head.css('width', `${startTableWidth + diff}px`);
+                tab_head.parent().css('width', `${startTableWidth + diff}px`);
             });
 
             // Ao soltar o mouse, para o redimensionamento
@@ -166,41 +180,73 @@ $(function () {
                 $(document).off('mouseup');
 
                 // Redimensiona o corpo da tabela
-                $('#'+tableName+'-table tbody tr').each(function () {
+                $('#' + tableName + '-table tbody tr').each(function () {
                     $(this).closest('table').find('colgroup').find('col').eq(columnIndex).css('width', newWidth + 'px');
                 });
-                $('#'+tableName+'-table').css('width', `${tab_head.width()}px`);
+                $('#' + tableName + '-table').css('width', `${tab_head.width()}px`);
+                //$('#'+tableName+'-table').closest('.dt-scroll').find('.dt-scroll-headInner').css('width', `${tab_head.width()}px`);
+
+                localStorage.setItem(tableName + '_headersize_' + columnIndex, newWidth);
+                // console.log('largura '+columnIndex+': '+newWidth);
 
                 //-- FAZ O AJUSTE FINO FINAL
                 setTimeout(function () {
                     //table.columns.adjust();
                     isResizing = false; // Termina o redimensionamento
-                }, 200);
+                }, 500);
 
             });
+        }).on('dblclick', function (e) { // doubleclick on resizer div resets the default width column
+            e.stopPropagation();// Impede a ordenação se estiver redimensionando
+            
+            isResizing = true;
+
+            const columnIndex = $(this).parent('th').index(); // Índice da coluna
+            const widthOld = parseInt(localStorage.getItem(tableName + '_headersize_' + columnIndex));
+            localStorage.removeItem(tableName + '_headersize_' + columnIndex);
+
+            let newWidth = 200; // just default
+            let columns = JSON.parse($('#crud-datatables-columns').val());
+
+            $(columns).filter(function (i, e) {
+                return (e.visible ?? true) !== false;
+            }).each(function (i, e) {
+                if (i == columnIndex) {
+                    newWidth = parseInt(e.width);
+                }
+            })
+
+            let startTableWidth = parseInt(tab_head.css('width'));
+            tab_head.find('colgroup').find('col').eq(columnIndex).css('width', `${newWidth}px`);
+            tab_head.css('width', (startTableWidth - widthOld + newWidth) + 'px');
+            tab_head.parent().css('width', (startTableWidth - widthOld + newWidth) + 'px');
+
+            // Redimensiona o corpo da tabela
+            $('#' + tableName + '-table tbody tr').each(function () {
+                $(this).closest('table').find('colgroup').find('col').eq(columnIndex).css('width', newWidth + 'px');
+            });
+            $('#' + tableName + '-table').css('width', `${tab_head.width()}px`);
+
+            //-- FAZ O AJUSTE FINO FINAL
+            setTimeout(function () {
+                //table.columns.adjust();
+                isResizing = false; // Termina o redimensionamento
+            }, 500);
+
+
         });
     };
 
     // Iniciar a funcionalidade de redimensionamento
     resizeColumns();
 
-    //-- PAGINATE - PAGE LENGTH COLTROL
+    //-- PAGINATE - PAGE LENGTH CONTROL
 
     // Evento de mudança no seletor de quantidade de linhas
-    $('select[name="'+tableName+'-table_length"]').on('change', function () {
+    $('select[name="' + tableName + '-table_length"]').on('change', function () {
         const newPageLength = $(this).val();
-        localStorage.setItem(tableName+'_pageLength', newPageLength);
+        localStorage.setItem(tableName + '_pageLength', newPageLength);
     });
-
-    // Evento de mudança de página
-    /*
-    table.on('page', function () {
-        const currentPage = table.page();
-        localStorage.setItem('currentPage', currentPage);
-        // console.log('armazenou pagina ' + currentPage);
-
-    });
-    */
 
     //-- SELECT LINE CONTROL
 
@@ -212,14 +258,14 @@ $(function () {
             // Obtém os dados da linha selecionada
             const rowData = table.row(indexes).data(); // Dados da linha selecionada
             window.selectedRow = rowData;
-            localStorage.setItem(tableName+'_selectedRowId', rowData.id); // Salva o ID da linha no localStorage
-        }        
+            localStorage.setItem(tableName + '_selectedRowId', rowData.id); // Salva o ID da linha no localStorage
+        }
     });
 
     table.on('draw', function () {
 
         // Carregar a seleção salva
-        const savedRowId = localStorage.getItem(tableName+'_selectedRowId');
+        const savedRowId = localStorage.getItem(tableName + '_selectedRowId');
         if (savedRowId) {
             table.rows().every(function () {
                 const data = this.data();
@@ -236,14 +282,14 @@ $(function () {
 
         //-- MOVE O SCROLL DO DATATABLES PARA MOSTRAR O REGISTRO SELECIONADO !!!! EXCELENT
 
-        const rowOffset = $('#'+tableName+'-table tr.selected').offset().top; // Posição da linha no documento
-        const tableOffset = $('#'+tableName+'-table').offset().top; // Posição da tabela
+        const rowOffset = $('#' + tableName + '-table tr.selected').offset().top; // Posição da linha no documento
+        const tableOffset = $('#' + tableName + '-table').offset().top; // Posição da tabela
 
         // Calcula a rolagem necessária para levar a linha ao topo da tela
         const offset = rowOffset - tableOffset;
 
         // Faz a rolagem da tabela para o topo da linha selecionada
-        $('#'+tableName+'-table').parent().scrollTop(offset);
+        $('#' + tableName + '-table').parent().scrollTop(offset);
 
     });
 
